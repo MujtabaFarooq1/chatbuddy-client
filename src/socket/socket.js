@@ -5,7 +5,8 @@ import { io } from "socket.io-client";
 // const SERVER_URL = "http://192.168.100.6:8000/";
 // const SERVER_URL = "http://192.168.100.27:8000/";
 // const SERVER_URL = " https://efb5-59-103-231-163.ngrok.io/";
-const SERVER_URL = "https://a396-59-103-231-163.ngrok.io";
+//const SERVER_URL = "https://a396-59-103-231-163.ngrok.io";
+const SERVER_URL = "https://chatbuddy-server.herokuapp.com/";
 
 const socket = io(SERVER_URL, {
   autoConnect: true,
