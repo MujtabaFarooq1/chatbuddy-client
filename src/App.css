@@ -1,0 +1,261 @@
+#root {
+  height: 100vh;
+}
+.ant-layout {
+  height: 100%;
+}
+
+.ant-layout-sider-children::-webkit-scrollbar {
+  display: none;
+}
+.ant-layout-sider-children {
+  overflow: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.app-footer {
+  padding: 1rem 0.5rem;
+  width: 100%;
+  background-color: rgb(230, 230, 230);
+  font-size: 1rem;
+  text-align: center;
+}
+
+.content-wrapper {
+  height: 100%;
+  padding: 1rem;
+  background-color: rgb(252, 252, 252);
+  overflow: auto;
+}
+
+.userImage {
+  border-radius: 50%;
+  width: 100px;
+}
+.user-content-wrapper {
+  text-align: center;
+  padding: 1rem 0.5rem;
+  border: 1px solid rgba(219, 219, 219, 0.548);
+  cursor: pointer;
+  transition: all 1s;
+}
+
+.user-content-wrapper:hover {
+  background-color: rgb(231, 231, 231);
+}
+
+/* Message Related Styles */
+.message {
+  max-width: 300px;
+  word-wrap: break-word;
+  margin-bottom: 12px;
+  line-height: 24px;
+  position: relative;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 1rem;
+}
+
+.messageSentBy {
+  /* position: absolute;
+  top: -25px; */
+  font-weight: 700;
+  text-transform: capitalize;
+  color: #000;
+  /* left: 0; */
+  display: block;
+  /* width: 90%; */
+}
+
+.message:before,
+.message:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  height: 25px;
+}
+
+.send {
+  color: var(--send-color);
+  background: var(--send-bg);
+  align-self: flex-end;
+}
+
+.send:before {
+  right: -7px;
+  width: 20px;
+  background-color: var(--send-bg);
+  border-bottom-left-radius: 16px 14px;
+}
+
+.send:after {
+  right: -26px;
+  width: 26px;
+  background-color: var(--page-background);
+  border-bottom-left-radius: 10px;
+}
+.receive {
+  background: var(--receive-bg);
+  color: black;
+  align-self: flex-start;
+}
+.receive:before {
+  left: -7px;
+  width: 20px;
+  background-color: var(--receive-bg);
+  border-bottom-right-radius: 16px 14px;
+}
+.receive:after {
+  left: -26px;
+  width: 26px;
+  background-color: var(--page-background);
+  border-bottom-right-radius: 10px;
+}
+
+.messageContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 1rem;
+}
+
+.messageStatus {
+  display: block;
+  font-size: 15px;
+}
+
+.send .messageStatus {
+  text-align: end;
+  color: var(--receive-bg);
+}
+
+.receive .messageStatus {
+  text-align: start;
+  color: var(--send-bg);
+}
+
+.messageListWrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 1rem;
+}
+
+.messageSendForm {
+  display: flex;
+  flex-direction: row;
+}
+
+:root {
+  --send-bg: #0b93f6;
+  --send-color: white;
+  --receive-bg: #e5e5ea;
+  --receive-text: black;
+  --page-background: white;
+}
+
+.ant-layout-content {
+  height: 100%;
+}
+
+.chatContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+/*  Sidebar profile section */
+
+/* .sideNavProfile {
+  display: flex;
+  padding: 2px;
+  align-items: center;
+  cursor: pointer;
+  border-bottom: 1px solid #ffffff2e;
+  margin-bottom: 5px;
+  background: #1c344a;
+  transition: all 0.3s;
+}
+
+.sideNavProfile:hover {
+  filter: brightness(0.8);
+}
+
+.sideNavProfile__imgContainer {
+  overflow: hidden;
+  width: 55px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.sideNavProfile__img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.sideNavProfile__description {
+  line-height: 1em;
+}
+
+.profileHeading {
+  color: white;
+  margin-top: 8px;
+  font-size: 1.2rem;
+  font-weight: 400;
+  text-transform: lowercase;
+  line-height: 1.2em;
+}
+
+.lastSeenAt {
+  font-size: 0.75rem;
+} */
+
+.sideNavProfile__description {
+  display: flex;
+  align-items: center;
+}
+
+.sideNavProfile__imgContainer {
+  width: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.profileHeading {
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 400;
+  text-transform: lowercase;
+  line-height: 1.2em;
+  margin-left: 5px;
+}
+
+.sideNavProfile__img {
+  object-fit: cover;
+  width: 100%;
+}
+
+.sideNavProfile__lastSeenText {
+  line-height: 1em;
+  font-size: 0.7rem;
+  filter: brightness(0.8);
+  text-align: left;
+  margin-top: 5px;
+  margin-left: 10px;
+  margin-bottom: 0;
+}
+
+.sideNavProfile {
+  padding: 5px;
+  cursor: pointer;
+  border-bottom: 1px solid #ffffff2e;
+  margin-bottom: 5px;
+  background: #1c344a;
+  transition: all 0.3s;
+}
+
+.sideNavProfile:hover {
+  filter: brightness(0.8);
+}
