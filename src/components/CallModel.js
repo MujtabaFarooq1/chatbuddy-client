@@ -1,23 +1,19 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
-import { Input, Button, Modal } from "antd";
+import React, { useEffect } from "react";
+import { Button, Modal } from "antd";
 import { useCallModelContext } from "../context/callModelContext";
 import { usePeerModelContext } from "../context/peerModelContext";
 import { useStreamModelContext } from "../context/streamsModelContext";
-import socket, { io } from "../socket/socket";
+import socket from "../socket/socket";
 import { useAuth } from "../context/auth-context";
 import Peer from "simple-peer";
 import VideoStream from "./VideoStream";
-import ConnectionObject from "../interfaces/ConnectionObject";
+// import ConnectionObject from "../interfaces/ConnectionObject";
 
 const CallModel = (props) => {
   const { curAuth } = useAuth();
   const { callModelState, callModelDispatch } = useCallModelContext();
   const { peerModelState, peerModelDispatch } = usePeerModelContext();
   const { streamModelState, streamModelDispatch } = useStreamModelContext();
-
-  useEffect(() => {
-    // console.log(socket._callbacks);
-  });
 
   if (!socket._callbacks[`$reject-call`]) {
     socket.on("reject-call", ({ rejectedBy, rejectedTo }) => {
@@ -64,7 +60,7 @@ const CallModel = (props) => {
             // console.log("My Peer is", peerModelState);
           }
         } catch (err) {
-          // console.log(err.message);
+          console.log(err.message);
         }
       }
     );

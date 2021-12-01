@@ -3,10 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.7.0",
+    "@emotion/styled": "^11.6.0",
     "@mui/material": "^5.0.4",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
     "antd": "^4.16.13",
     "audio-react-recorder": "1.0.4",
     "firebase": "^8.10.0",
@@ -26,7 +25,7 @@
     "webrtc-adapter": "^8.1.0"
   },
   "scripts": {
-     "dev": "react-scripts start",
+    "dev": "react-scripts start",
     "start": "serve -s build",
     "build": "react-scripts build",
     "test": "react-scripts test",

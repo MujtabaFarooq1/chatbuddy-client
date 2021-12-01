@@ -1,7 +1,7 @@
 // import { NavLink } from "react-router-dom";
 import { firebase } from "../firebase/firebase";
 import { useAuth } from "../context/auth-context";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { PageHeader, Button } from "antd";
 
 const AppHeader = () => {
@@ -23,7 +23,7 @@ const AppHeader = () => {
   return (
     <PageHeader
       ghost={false}
-      title="Chat Buddy"
+      title={<Link to="/">Chat Buddy</Link>}
       extra={[
         <Button onClick={handleLogout} key="logout" type="primary">
           Logout

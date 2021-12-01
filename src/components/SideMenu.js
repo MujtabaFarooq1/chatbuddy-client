@@ -79,33 +79,45 @@ const SideMenu = () => {
         <Menu.Item key="2" icon={<DesktopOutlined />}>
           Option 2
         </Menu.Item>
-        <SubMenu key="friends" icon={<UserOutlined />} title="Friends">
+
+        <SubMenu
+          className="friends__container"
+          key="friends"
+          icon={<UserOutlined />}
+          title="Friends"
+        >
           {friends.map((friend) => {
             return (
-              <div
-                className="sideNavProfile"
-                key={friend.uid}
-                onClick={() => {
-                  gotoUserRoom(friend.uid);
-                  setSelectedKey(friend.uid);
-                }}
-              >
-                <div className="sideNavProfile__description">
-                  <div className="sideNavProfile__imgContainer">
-                    <img
-                      src={friend?.img ?? "/avatar.jpg"}
-                      alt="profile-avatar"
-                      className="sideNavProfile__img"
-                    />
+              <Menu.Item key={friend.uid}>
+                <div
+                  className="sideNavProfile"
+                  // key={friend.uid}
+                  onClick={() => {
+                    gotoUserRoom(friend.uid);
+                    setSelectedKey(friend.uid);
+                  }}
+                >
+                  <div className="sideNavProfile__description">
+                    <div className="sideNavProfile__imgContainer">
+                      <img
+                        src={friend?.img ?? "/avatar.jpg"}
+                        alt="profile-avatar"
+                        className="sideNavProfile__img"
+                      />
+                    </div>
+
+                    <h3 className="profileHeading">
+                      {friend.userName.length < 10
+                        ? friend.userName
+                        : `${friend.userName.substring(0, 10)} ...`}
+                    </h3>
                   </div>
 
-                  <h3 className="profileHeading">{friend.userName}</h3>
+                  {/* <p className="sideNavProfile__lastSeenText">
+                    Last seen at 5 minutes ago ...
+                  </p> */}
                 </div>
-
-                <p className="sideNavProfile__lastSeenText">
-                  Last seen at 5 minutes ago ...
-                </p>
-              </div>
+              </Menu.Item>
             );
           })}
         </SubMenu>

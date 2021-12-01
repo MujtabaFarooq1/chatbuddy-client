@@ -10,7 +10,7 @@ import { useStreamModelContext } from "../context/streamsModelContext";
 import MessageList from "./MessageList";
 import { useLocation } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-import { Input, Button, Modal } from "antd";
+import { Input, Button } from "antd";
 import { checkIfUserExistWithId } from "../actions/dbHelper";
 import { useAuth } from "../context/auth-context";
 import { nanoid } from "nanoid";
@@ -75,9 +75,10 @@ const ChatPage = () => {
 
         setLoading(false);
       } else {
-        alert(
-          "Kindly make sure the person you are messaging is really your friend"
-        );
+        // message.info("Sorry Try To Message your friend from the dashboard!");
+        // alert(
+        //   "Kindly make sure the person you are messaging is really your friend"
+        // );
         history.push("/");
       }
     });
@@ -230,19 +231,6 @@ const ChatPage = () => {
     }
   };
 
-  const initializeVideoCall2 = async () => {
-    try {
-      const currentStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
-
-      const offer = "";
-    } catch (err) {
-      /* handle the error */
-    }
-  };
-
   return (
     <>
       <div className="chatContainer">
@@ -265,7 +253,7 @@ const ChatPage = () => {
             <Input
               type="text"
               name="message"
-              autocomplete="off"
+              autoComplete="off"
               onChange={(e) => {
                 setInputMessage(e.target.value);
               }}
