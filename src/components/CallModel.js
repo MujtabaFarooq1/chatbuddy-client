@@ -22,6 +22,7 @@ const CallModel = (props) => {
       } else {
         callModelDispatch({ type: "CALL_REJECTED", payload: rejectedTo });
       }
+      streamModelDispatch({ type: "REMOVE_ALL_STREAMS" });
       console.log("call rejected by ->", rejectedBy);
     });
   }
@@ -186,7 +187,7 @@ const CallModel = (props) => {
         width={callModelState.modelState === "connected" ? "100%" : "50%"}
         onOk={() => {
           callModelDispatch({ type: "CLOSE" });
-
+          streamModelDispatch({ type: "REMOVE_ALL_STREAMS" });
           // const callRejectedToList = callModelState?.options?.to?.filter(
           //   (connectionObj) => connectionObj.uid !== curAuth.uid
           // );
