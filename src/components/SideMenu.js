@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { nanoid } from "nanoid";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Spin } from "antd";
 import socket from "../socket/socket";
 import { useHistory } from "react-router-dom";
 import {
@@ -23,6 +23,7 @@ const SideMenu = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [friends, setFriends] = useState([]);
   const [selectedKey, setSelectedKey] = useState("2");
+  const [loading, serLoading] = useState(true);
   const history = useHistory();
 
   useEffect(() => {
@@ -42,6 +43,7 @@ const SideMenu = () => {
       ];
     });
     setFriends([...allFriends]);
+    serLoading(false);
   };
 
   const gotoUserRoom = (roomId) => {
@@ -86,40 +88,46 @@ const SideMenu = () => {
           icon={<UserOutlined />}
           title="Friends"
         >
-          {friends.map((friend) => {
-            return (
-              <Menu.Item key={friend.uid}>
-                <div
-                  className="sideNavProfile"
-                  // key={friend.uid}
-                  onClick={() => {
-                    gotoUserRoom(friend.uid);
-                    setSelectedKey(friend.uid);
-                  }}
-                >
-                  <div className="sideNavProfile__description">
-                    <div className="sideNavProfile__imgContainer">
-                      <img
-                        src={friend?.img ?? "/avatar.jpg"}
-                        alt="profile-avatar"
-                        className="sideNavProfile__img"
-                      />
+          {!loading ? (
+            friends.map((friend) => {
+              return (
+                <Menu.Item key={friend.uid}>
+                  <div
+                    className="sideNavProfile"
+                    // key={friend.uid}
+                    onClick={() => {
+                      gotoUserRoom(friend.uid);
+                      setSelectedKey(friend.uid);
+                    }}
+                  >
+                    <div className="sideNavProfile__description">
+                      <div className="sideNavProfile__imgContainer">
+                        <img
+                          src={friend?.img ?? "/avatar.jpg"}
+                          alt="profile-avatar"
+                          className="sideNavProfile__img"
+                        />
+                      </div>
+
+                      <h3 className="profileHeading">
+                        {friend.userName.length < 10
+                          ? friend.userName
+                          : `${friend.userName.substring(0, 10)} ...`}
+                      </h3>
                     </div>
 
-                    <h3 className="profileHeading">
-                      {friend.userName.length < 10
-                        ? friend.userName
-                        : `${friend.userName.substring(0, 10)} ...`}
-                    </h3>
-                  </div>
-
-                  {/* <p className="sideNavProfile__lastSeenText">
+                    {/* <p className="sideNavProfile__lastSeenText">
                     Last seen at 5 minutes ago ...
                   </p> */}
-                </div>
-              </Menu.Item>
-            );
-          })}
+                  </div>
+                </Menu.Item>
+              );
+            })
+          ) : (
+            <Menu.Item>
+              <Spin tip="Getting Your Friends..."></Spin>
+            </Menu.Item>
+          )}
         </SubMenu>
         <SubMenu key="sub2" icon={<TeamOutlined />} title="Team">
           <Menu.Item key="6">Team 1</Menu.Item>

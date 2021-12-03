@@ -30,7 +30,7 @@ ReactDOM.render(<Loading />, document.getElementById("root"));
 const MyApp = ({ uid }) => {
   useEffect(() => {
     connectToSocket(uid);
-  }, []);
+  }, [uid]);
 
   return (
     // ----------- Authentication Context provider -----------

@@ -244,36 +244,40 @@ const ChatPage = () => {
           )}
         </div>
         <div>
-          <form
-            className="messageSendForm"
-            onSubmit={(e) => {
-              handleMessageSend(e);
-            }}
-          >
-            <Input
-              type="text"
-              name="message"
-              autoComplete="off"
-              onChange={(e) => {
-                setInputMessage(e.target.value);
+          {!loading ? (
+            <form
+              className="messageSendForm"
+              onSubmit={(e) => {
+                handleMessageSend(e);
               }}
-              value={inputMessage}
-            />
-
-            <Button key="send" type="primary" htmlType="submit">
-              Send
-            </Button>
-
-            <Button
-              key="video-call"
-              onClick={() => {
-                initializeVideoCall();
-              }}
-              type="primary"
             >
-              Video call
-            </Button>
-          </form>
+              <Input
+                type="text"
+                name="message"
+                autoComplete="off"
+                onChange={(e) => {
+                  setInputMessage(e.target.value);
+                }}
+                value={inputMessage}
+              />
+
+              <Button key="send" type="primary" htmlType="submit">
+                Send
+              </Button>
+
+              <Button
+                key="video-call"
+                onClick={() => {
+                  initializeVideoCall();
+                }}
+                type="primary"
+              >
+                Video call
+              </Button>
+            </form>
+          ) : (
+            <p>Wait a moment please !</p>
+          )}
         </div>
       </div>
     </>

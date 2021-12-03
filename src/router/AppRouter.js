@@ -4,8 +4,17 @@ import PublicRoute from "./PublicRoute";
 import LoginPage from "../components/LoginPage";
 import ChatPage from "../components/ChatPage";
 import DashboardPage from "../components/DashboardPage";
+import socket, { connectToSocket } from "../socket/socket";
+import { useEffect } from "react";
+import { useAuth } from "../context/auth-context";
 
 const AppRouter = () => {
+  const auth = useAuth();
+  useEffect(() => {
+    if (socket.disconnected) {
+      connectToSocket(auth?.curAuth?.uid);
+    }
+  }, [auth]);
   return (
     <Router>
       <Switch>
