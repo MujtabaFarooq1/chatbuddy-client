@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Divider, Image, Avatar, Button, Skeleton } from "antd";
+import { Divider, Image, Avatar, Button, Skeleton } from "antd";
+import { Container, Row, Col } from "react-grid-system";
 import { getCurrentUser } from "../actions/users";
 import {
   getAllUsersAsync,
@@ -106,68 +107,84 @@ const DashboardPage = () => {
       <div>
         <>
           <Divider orientation="left">Users</Divider>
-          <Row gutter={[16, { xs: 8, sm: 16, md: 24, lg: 32 }]}>
-            {!loading ? (
-              usersList.map((user) => (
-                <Col key={user.uid} className="gutter-row" span={6}>
-                  <div className="user-content-wrapper">
-                    {user.img ? (
-                      <Image className="userImage" src={user.img} />
-                    ) : (
-                      <Avatar size={100} icon={<UserOutlined />} />
-                    )}
+          <Container>
+            <Row debug>
+              {!loading ? (
+                usersList.map((user) => (
+                  <Col
+                    key={user.uid}
+                    className="gutter-row"
+                    sm={12}
+                    lg={3}
+                    md={8}
+                  >
+                    <div className="user-content-wrapper">
+                      {user.img ? (
+                        <Image className="userImage" src={user.img} />
+                      ) : (
+                        <Avatar size={100} icon={<UserOutlined />} />
+                      )}
 
-                    <h3>{user.userName}</h3>
-                    <Button
-                      onClick={() => {
-                        addFriend(user.uid);
-                      }}
-                      key="addFriend"
-                      type="primary"
-                    >
-                      Add Friend
-                    </Button>
-                  </div>
-                </Col>
-              ))
-            ) : (
-              <Skeleton avatar active paragraph={{ rows: 4 }} />
-            )}
-          </Row>
+                      <h3>{user.userName}</h3>
+                      <Button
+                        onClick={() => {
+                          addFriend(user.uid);
+                        }}
+                        key="addFriend"
+                        type="primary"
+                      >
+                        Add Friend
+                      </Button>
+                    </div>
+                  </Col>
+                ))
+              ) : (
+                <Skeleton avatar active paragraph={{ rows: 4 }} />
+              )}
+            </Row>
+          </Container>
         </>
       </div>
 
       <div>
         <>
           <Divider orientation="left">Friends</Divider>
-          <Row gutter={[16, { xs: 8, sm: 16, md: 24, lg: 32 }]}>
-            {!loading ? (
-              friends.map((friend) => (
-                <Col key={friend.uid} className="gutter-row" span={6}>
-                  <div className="user-content-wrapper">
-                    {friend.img ? (
-                      <Image className="userImage" src={friend.img} />
-                    ) : (
-                      <Avatar size={100} icon={<UserOutlined />} />
-                    )}
+          <Container>
+            <Row debug>
+              {!loading ? (
+                friends.map((friend) => (
+                  <Col
+                    key={friend.uid}
+                    className="gutter-row"
+                    sm={12}
+                    lg={3}
+                    md={8}
+                  >
+                    <div className="user-content-wrapper">
+                      {friend.img ? (
+                        <Image className="userImage" src={friend.img} />
+                      ) : (
+                        <Avatar size={100} icon={<UserOutlined />} />
+                      )}
 
-                    <h3>{friend.userName}</h3>
-                    <Button
-                      onClick={() => {
-                        gotoUserRoom(friend.uid);
-                      }}
-                      key="goToChat"
-                      type="primary"
-                    >
-                      Message
-                    </Button>
-                  </div>
-                </Col>
-              ))
-            ) : (
-              <Skeleton avatar active paragraph={{ rows: 4 }} />
-            )}
-          </Row>
+                      <h3>{friend.userName}</h3>
+                      <Button
+                        onClick={() => {
+                          gotoUserRoom(friend.uid);
+                        }}
+                        key="goToChat"
+                        type="primary"
+                      >
+                        Message
+                      </Button>
+                    </div>
+                  </Col>
+                ))
+              ) : (
+                <Skeleton avatar active paragraph={{ rows: 4 }} />
+              )}
+            </Row>
+          </Container>
         </>
       </div>
     </div>
