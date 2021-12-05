@@ -5,6 +5,9 @@ const streamModelReducer = (state, action) => {
         myStreams: !state.myStreams[action.payload.id]
           ? [...state.myStreams, action.payload.streamToAdd]
           : [...state.myStreams],
+        myStreamId: action?.payload?.myStramId
+          ? action?.payload?.myStramId
+          : state.myStramId,
       };
     case "UPDATE_STREAM":
       return {

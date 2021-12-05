@@ -7,6 +7,7 @@ import socket from "../socket/socket";
 import { useAuth } from "../context/auth-context";
 import Peer from "simple-peer";
 import VideoStream from "./VideoStream";
+import { Container, Row, Col } from "react-grid-system";
 // import ConnectionObject from "../interfaces/ConnectionObject";
 
 const CallModel = (props) => {
@@ -120,7 +121,11 @@ const CallModel = (props) => {
 
       streamModelDispatch({
         type: "ADD_STREAM",
-        payload: { id: myStream.id, streamToAdd: myStream },
+        payload: {
+          id: myStream.id,
+          streamToAdd: myStream,
+          myStramId: myStream.id,
+        },
       });
 
       // if (!peerModelState?.myPeer) {
@@ -208,9 +213,15 @@ const CallModel = (props) => {
               "My video tracks for first stream is ->",
               streamModelState.myStreams[0].getVideoTracks()
             )}
-            {streamModelState.myStreams.map((stream) => (
-              <VideoStream stream={stream} />
-            ))}
+            <Container>
+              <Row>
+                {streamModelState.myStreams.map((stream) => (
+                  <Col lg={6} md={4}>
+                    <VideoStream stream={stream} key={stream.id} />
+                  </Col>
+                ))}
+              </Row>
+            </Container>
           </div>
         ) : callModelState.modelState === "ringing" ? (
           <div>

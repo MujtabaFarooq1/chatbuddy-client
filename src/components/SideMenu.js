@@ -124,7 +124,7 @@ const SideMenu = () => {
               );
             })
           ) : (
-            <Menu.Item>
+            <Menu.Item key={"spinner"}>
               <Spin tip="Getting Your Friends..."></Spin>
             </Menu.Item>
           )}

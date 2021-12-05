@@ -3,6 +3,7 @@ import streamModelReducer from "../reducers/streamsModelReducer";
 
 const streamModelInitialState = {
   myStreams: [],
+  myStreamId: null,
 };
 
 export const StreamModelContext = createContext(streamModelInitialState);

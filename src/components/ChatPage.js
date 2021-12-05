@@ -181,7 +181,11 @@ const ChatPage = () => {
 
       streamModelDispatch({
         type: "ADD_STREAM",
-        payload: { id: currentStream.id, streamToAdd: currentStream },
+        payload: {
+          id: currentStream.id,
+          streamToAdd: currentStream,
+          myStramId: currentStream.id,
+        },
       });
 
       const peer = new Peer({
