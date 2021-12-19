@@ -3,7 +3,7 @@ import { Button, Modal } from "antd";
 import { useCallModelContext } from "../context/callModelContext";
 import { usePeerModelContext } from "../context/peerModelContext";
 import { useStreamModelContext } from "../context/streamsModelContext";
-import socket from "../socket/socket";
+import socket, { connectToSocket } from "../socket/socket";
 import { useAuth } from "../context/auth-context";
 import Peer from "simple-peer";
 import VideoStream from "./VideoStream";
@@ -16,17 +16,60 @@ const CallModel = (props) => {
   const { peerModelState, peerModelDispatch } = usePeerModelContext();
   const { streamModelState, streamModelDispatch } = useStreamModelContext();
 
-  if (!socket._callbacks[`$reject-call`]) {
-    socket.on("reject-call", ({ rejectedBy, rejectedTo }) => {
-      if (rejectedTo?.length < 2) {
-        callModelDispatch({ type: "CLOSE" });
-      } else {
-        callModelDispatch({ type: "CALL_REJECTED", payload: rejectedTo });
+  useEffect(() => {
+    if (socket._callbacks) {
+      if (!socket._callbacks[`$reject-call`]) {
+        socket.on("reject-call", ({ rejectedBy, rejectedTo }) => {
+          if (rejectedTo?.length < 2) {
+            callModelDispatch({ type: "CLOSE" });
+          } else {
+            callModelDispatch({ type: "CALL_REJECTED", payload: rejectedTo });
+          }
+          streamModelDispatch({ type: "REMOVE_ALL_STREAMS" });
+          console.log("call rejected by ->", rejectedBy);
+        });
       }
-      streamModelDispatch({ type: "REMOVE_ALL_STREAMS" });
-      console.log("call rejected by ->", rejectedBy);
-    });
-  }
+
+      if (!socket._callbacks[`$some-user-accepted-call`]) {
+        socket.on(
+          "some-user-accepted-call",
+          ({ updatedToList, acceptedByUserId }) => {
+            try {
+              // console.log("PEER model state is ->", peerModelState);
+
+              if (peerModelState?.myPeer) {
+                // console.log(
+                //   `${acceptedByUserId} just accepted the call ! and the new To List is now  `,
+                //   updatedToList
+                // );
+
+                const userConnectionObject = updatedToList.filter(
+                  (connectionObject) =>
+                    connectionObject.uid === acceptedByUserId
+                )[0];
+
+                // console.log("Connection object to check is ", userConnectionObject);
+
+                peerModelState?.myPeer.signal(userConnectionObject.signalData);
+
+                // console.log("I also accepted his call !", peerModelState?.myPeer);
+
+                callModelDispatch({
+                  type: "TO_LIST_UPDATED",
+                  payload: { to: updatedToList },
+                });
+              } else {
+                // console.log("i don't have peer object");
+                // console.log("My Peer is", peerModelState);
+              }
+            } catch (err) {
+              // console.log(err.message);
+            }
+          }
+        );
+      }
+    }
+  }, [socket]);
 
   useEffect(() => {
     socket.removeAllListeners("some-user-accepted-call");
@@ -67,44 +110,6 @@ const CallModel = (props) => {
       }
     );
   }, [peerModelState]);
-
-  if (!socket._callbacks[`$some-user-accepted-call`]) {
-    socket.on(
-      "some-user-accepted-call",
-      ({ updatedToList, acceptedByUserId }) => {
-        try {
-          // console.log("PEER model state is ->", peerModelState);
-
-          if (peerModelState?.myPeer) {
-            // console.log(
-            //   `${acceptedByUserId} just accepted the call ! and the new To List is now  `,
-            //   updatedToList
-            // );
-
-            const userConnectionObject = updatedToList.filter(
-              (connectionObject) => connectionObject.uid === acceptedByUserId
-            )[0];
-
-            // console.log("Connection object to check is ", userConnectionObject);
-
-            peerModelState?.myPeer.signal(userConnectionObject.signalData);
-
-            // console.log("I also accepted his call !", peerModelState?.myPeer);
-
-            callModelDispatch({
-              type: "TO_LIST_UPDATED",
-              payload: { to: updatedToList },
-            });
-          } else {
-            // console.log("i don't have peer object");
-            // console.log("My Peer is", peerModelState);
-          }
-        } catch (err) {
-          // console.log(err.message);
-        }
-      }
-    );
-  }
 
   const handleAcceptCall = async () => {
     try {

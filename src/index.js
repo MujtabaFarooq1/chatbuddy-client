@@ -28,11 +28,17 @@ const Loading = () => {
 ReactDOM.render(<Loading />, document.getElementById("root"));
 
 const MyApp = ({ uid }) => {
+  const { online } = useOnlineStatus();
+
   useEffect(() => {
     connectToSocket(uid);
   }, [uid]);
 
-  return (
+  useEffect(() => {
+    console.log(online);
+  }, [online]);
+
+  return online ? (
     // ----------- Authentication Context provider -----------
     <AuthProvider uid={uid}>
       {/* // ----------- Call Model Context Provider ----------- */}
@@ -46,6 +52,8 @@ const MyApp = ({ uid }) => {
         </PeerModelProvider>
       </CallModelProvider>
     </AuthProvider>
+  ) : (
+    <h1> You Are Offline ! </h1>
   );
 };
 

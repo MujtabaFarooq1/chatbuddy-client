@@ -10,6 +10,7 @@ import ContentWrapper from "../components/ContentWrapper";
 import CallModel from "../components/CallModel";
 import socket from "../socket/socket";
 import { notification } from "antd";
+import { useEffect } from "react";
 
 // const { online } = useOnlineStatus();
 //   const [isOnline, setIsOnline] = useState(online);
@@ -41,40 +42,42 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       });
   };
 
-  // Global Socket notification stuff
-  if (!socket._callbacks[`$msg-notify`]) {
-    socket.on("msg-notify", (payload) => {
-      curAuth.uid !== payload.from && openNotification(payload);
-    });
-  }
+  useEffect(() => {
+    // Global Socket notification stuff
+    if (!socket._callbacks[`$msg-notify`]) {
+      socket.on("msg-notify", (payload) => {
+        curAuth.uid !== payload.from && openNotification(payload);
+      });
+    }
 
-  // Global Ringing Model
-  if (!socket._callbacks[`$callUser`]) {
-    socket.on("callUser", ({ initiatorId, initiatorName, to }) => {
-      console.log(
-        "Im recieving a call from ",
-        initiatorName,
-        "List of connection objects are ",
-        to
-      );
+    // Global Ringing Model
+    if (!socket._callbacks[`$callUser`]) {
+      socket.on("callUser", ({ initiatorId, initiatorName, to }) => {
+        console.log(
+          "Im recieving a call from ",
+          initiatorName,
+          "List of connection objects are ",
+          to
+        );
 
-      if (!callModelState.modelOpen) {
-        callModelDispatch({
-          type: "RINGING",
-          payload: { initiatorId, initiatorName, to },
-        });
-      } else {
-        // socket.emit("reject-call", {
-        //   rejectedBy: curAuth.uid,
-        //   rejectedTo: callModelState?.options?.to,
-        // });
-      }
+        if (!callModelState.modelOpen) {
+          callModelDispatch({
+            type: "RINGING",
+            payload: { initiatorId, initiatorName, to },
+          });
+        } else {
+          // socket.emit("reject-call", {
+          //   rejectedBy: curAuth.uid,
+          //   rejectedTo: callModelState?.options?.to,
+          // });
+        }
 
-      console.log("Model is currently", callModelState.modelOpen);
+        console.log("Model is currently", callModelState.modelOpen);
 
-      // setCall({ isReceivingCall: true, from, name: callerName, signal });
-    });
-  }
+        // setCall({ isReceivingCall: true, from, name: callerName, signal });
+      });
+    }
+  }, []);
 
   return (
     <Route

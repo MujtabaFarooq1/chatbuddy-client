@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 // import { getCurrentUser } from "../actions/users";
 import socket from "../socket/socket";
-// import { nanoid } from "nanoid";
-// import database from "../firebase/firebase";
 import { useCallModelContext } from "../context/callModelContext";
 import { usePeerModelContext } from "../context/peerModelContext";
 import { useStreamModelContext } from "../context/streamsModelContext";
@@ -15,7 +13,6 @@ import { checkIfUserExistWithId } from "../actions/dbHelper";
 import { useAuth } from "../context/auth-context";
 import { nanoid } from "nanoid";
 import { getCurrentUserUserName } from "../actions/users";
-// const { TextArea } = Input;
 import Peer from "simple-peer";
 
 // importing connection object
@@ -35,20 +32,19 @@ const ChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [myStream, setMyStream] = useState();
-
-  //Rererences
-  const myVideoPreview = useRef();
-  const friendVideoPreview = useRef();
-  const connectionRef = useRef();
-
   // Call Model stuff
   const { callModelState, callModelDispatch } = useCallModelContext();
   const { peerModelState, peerModelDispatch } = usePeerModelContext();
   const { streamModelState, streamModelDispatch } = useStreamModelContext();
 
   useEffect(() => {
-    checkIfUserExistWithId(friendsRoomId).then((userExists) => {
+    // console.log("Joined room id is -> ", currentRoomId);
+
+    let unmounted = false;
+
+    const initializeThings = async () => {
+      const userExists = await checkIfUserExistWithId(friendsRoomId);
+
       if (userExists) {
         //Join Room
         socket.emit("join-room", {
@@ -57,78 +53,43 @@ const ChatPage = () => {
           myRoomId,
         });
 
-        if (!socket._callbacks[`$room-msg-recieve`]) {
-          socket.on("room-msg-recieve", ({ message: currentMessage, from }) => {
-            // currentMessage.type = "receive";
+        socket.on("room-msg-recieve", ({ message: currentMessage, from }) => {
+          // currentMessage.type = "receive";
+          if (!unmounted) {
             setMessages((previousMessages) => {
               currentMessage.type = "receive";
               return [...previousMessages, currentMessage];
             });
-          });
-        }
+          }
+        });
 
-        if (!socket._callbacks[`$initialMessages`]) {
-          socket.on("initialMessages", ({ initialChatMessages }) => {
+        socket.on("initialMessages", ({ initialChatMessages }) => {
+          if (!unmounted) {
             filterAndSetInitialMessages(initialChatMessages);
-          });
-        }
+          }
+        });
+
+        // console.log("Socket Callbacks are -> ", socket._callbacks);
 
         setLoading(false);
       } else {
-        // message.info("Sorry Try To Message your friend from the dashboard!");
-        // alert(
-        //   "Kindly make sure the person you are messaging is really your friend"
-        // );
         history.push("/");
       }
-    });
+    };
+
+    initializeThings();
 
     // Cleanup
     return () => {
-      setMessages([]);
+      // setMessages([]);
+      unmounted = true;
       socket.emit("leave-room", {
         roomToLeave: currentRoomId,
         leavingPerson: myRoomId,
       });
       console.log("Component destroyed");
     };
-  }, [currentRoomId, friendsRoomId, history, myRoomId]);
-
-  // // for handling stream state and calling
-  // useEffect(() => {
-  //   if (myStream !== undefined) {
-  //     // myVideoPreview.current.srcObject = myStream;
-  //     const peer = new Peer({
-  //       initiator: true,
-  //       trickle: false,
-  //       stream: myStream,
-  //     });
-  //     peer.on("signal", (data) => {
-  //       socket.emit("callUser", {
-  //         userToCall: friendsRoomId,
-  //         signalData: data,
-  //         from: myRoomId,
-  //         name: getCurrentUserUserName(),
-  //       });
-  //     });
-
-  //     peer.on("stream", (currentStream) => {
-  //       friendVideoPreview.current.srcObject = currentStream;
-  //     });
-
-  //     socket.on("callAccepted", ({ signal, userName }) => {
-  //       // setCallAccepted(true);
-  //       // setUserName(userName);
-  //       peer.signal(signal);
-  //       socket.emit("updateMyMedia", {
-  //         type: "both",
-  //         // currentMediaStatus: [myMicStatus, myVdoStatus],
-  //       });
-  //     });
-
-  //     connectionRef.current = peer;
-  //   }
-  // }, [myStream]);
+  }, []);
 
   const handleMessageSend = (e) => {
     e.preventDefault();
@@ -289,41 +250,3 @@ const ChatPage = () => {
 };
 
 export default ChatPage;
-
-{
-  /* <Modal
-title="Calling Friend"
-visible={isCalling}
-style={{ top: 20 }}
-width={callAccepted ? "100%" : "50%"}
-onOk={() => {
-  // myVideoPreview.current.srcObject = null;
-  setIsCalling(false);
-  setMyStream((prevStream) => {
-    prevStream.getTracks().forEach(function (track) {
-      track.stop();
-    });
-    return prevStream;
-  });
-}}
-onCancel={() => {
-  // myVideoPreview.current.srcObject = null;
-  setIsCalling(false);
-  setMyStream((prevStream) => {
-    prevStream.getTracks().forEach(function (track) {
-      track.stop();
-    });
-    return prevStream;
-  });
-}}
->
-{callAccepted ? (
-  <>
-    <video width="50%" controls autoPlay ref={myVideoPreview}></video>
-    <video width="50%" controls ref={friendVideoPreview}></video>
-  </>
-) : (
-  <p>Waiting for friend to accept the call ...</p>
-)}
-</Modal> */
-}
