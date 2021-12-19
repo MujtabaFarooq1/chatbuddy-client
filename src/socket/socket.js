@@ -19,31 +19,35 @@ export const connectToSocket = (uid) => {
 
   socket.emit("join-my-room", { myRoomId: uid });
 
-  if (!socket?._callbacks["$connect"]) {
-    socket.on("connect", () => {
-      console.log(
-        "Connected Successfully with socket id",
-        "My Ip is ",
-        // localIpUrl("private", "ipv4"),
-        "/n",
-        socket.id,
-        "myRoomId",
-        uid
-      ); // x8WIv7-mJelg7on_ALbx
-    });
-  }
-  if (!socket?._callbacks["$disconnect"]) {
-    socket.on("disconnect", () => {
-      console.log("Disconnected Successfully"); // undefined
-      io.socket.removeAllListeners();
-      socket.removeAllListeners();
-    });
-  }
-  if (!socket?._callbacks["$connect_error"]) {
-    socket.on("connect_error", (err) => {
-      socket.off();
-      console.log(err.message);
-    });
+  try {
+    if (!socket?._callbacks["$connect"]) {
+      socket.on("connect", () => {
+        console.log(
+          "Connected Successfully with socket id",
+          "My Ip is ",
+          // localIpUrl("private", "ipv4"),
+          "/n",
+          socket.id,
+          "myRoomId",
+          uid
+        ); // x8WIv7-mJelg7on_ALbx
+      });
+    }
+    if (!socket?._callbacks["$disconnect"]) {
+      socket.on("disconnect", () => {
+        console.log("Disconnected Successfully"); // undefined
+        io.socket.removeAllListeners();
+        socket.removeAllListeners();
+      });
+    }
+    if (!socket?._callbacks["$connect_error"]) {
+      socket.on("connect_error", (err) => {
+        socket.off();
+        console.log(err.message);
+      });
+    }
+  } catch (err) {
+    console.log(err.message);
   }
 
   return socket;
