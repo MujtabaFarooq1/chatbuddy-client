@@ -11,7 +11,7 @@ import { useAuth } from "../context/auth-context";
 const AppRouter = () => {
   const auth = useAuth();
   useEffect(() => {
-    if (socket.disconnected) {
+    if (socket?.disconnected) {
       connectToSocket(auth?.curAuth?.uid);
     }
   }, [auth]);

@@ -15,11 +15,11 @@ export const connectToSocket = (uid) => {
   socket.connect();
   socket.emit("login", { uid });
 
-  console.log(socket);
+  console.log("Connect to socket Called", socket);
 
   socket.emit("join-my-room", { myRoomId: uid });
 
-  if (!socket._callbacks["$connect"]) {
+  if (!socket?._callbacks["$connect"]) {
     socket.on("connect", () => {
       console.log(
         "Connected Successfully with socket id",
@@ -32,14 +32,14 @@ export const connectToSocket = (uid) => {
       ); // x8WIv7-mJelg7on_ALbx
     });
   }
-  if (!socket._callbacks["$disconnect"]) {
+  if (!socket?._callbacks["$disconnect"]) {
     socket.on("disconnect", () => {
       console.log("Disconnected Successfully"); // undefined
       io.socket.removeAllListeners();
       socket.removeAllListeners();
     });
   }
-  if (!socket._callbacks["$connect_error"]) {
+  if (!socket?._callbacks["$connect_error"]) {
     socket.on("connect_error", (err) => {
       socket.off();
       console.log(err.message);

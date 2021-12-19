@@ -31,7 +31,9 @@ const MyApp = ({ uid }) => {
   const { online } = useOnlineStatus();
 
   useEffect(() => {
-    connectToSocket(uid);
+    if (uid) {
+      connectToSocket(uid);
+    }
   }, [uid]);
 
   useEffect(() => {
