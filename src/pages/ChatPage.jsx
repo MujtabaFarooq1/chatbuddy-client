@@ -5,7 +5,7 @@ import { useCallModelContext } from "../context/callModelContext";
 import { usePeerModelContext } from "../context/peerModelContext";
 import { useStreamModelContext } from "../context/streamsModelContext";
 
-import MessageList from "./MessageList";
+import MessageList from "../components/MessageList";
 import { useLocation } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { Input, Button } from "antd";

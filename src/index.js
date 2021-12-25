@@ -12,6 +12,7 @@ import "firebaseui/dist/firebaseui.css";
 import "antd/dist/antd.css";
 import "./App.css";
 import adapter from "webrtc-adapter";
+import { withErrorBoundary } from "react-error-boundary";
 
 //Global variable
 let hasRendered = false;
@@ -59,9 +60,21 @@ const MyApp = ({ uid }) => {
   );
 };
 
+const MyAppWithErrorBondry = withErrorBoundary(MyApp, {
+  FallbackComponent: <h1>Oops Looks like something went wrong !</h1>,
+  onError(error, info) {
+    console.log(error, info);
+    // Do something with the error
+    // E.g. log to an error logging client here
+  },
+});
+
 const renderApp = (uid) => {
   if (!hasRendered) {
-    ReactDOM.render(<MyApp uid={uid} />, document.getElementById("root"));
+    ReactDOM.render(
+      <MyAppWithErrorBondry uid={uid} />,
+      document.getElementById("root")
+    );
     hasRendered = true;
   }
 };

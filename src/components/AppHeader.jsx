@@ -3,6 +3,7 @@ import { firebase } from "../firebase/firebase";
 import { useAuth } from "../context/auth-context";
 import { useHistory, Link } from "react-router-dom";
 import { PageHeader, Button } from "antd";
+import { useState } from "react";
 
 const AppHeader = () => {
   const { setAuth } = useAuth();
@@ -20,10 +21,14 @@ const AppHeader = () => {
       });
   };
 
+  //------------------------------------------------------------------------------------
+  const [title, setTitle] = useState("Welcom To Chat Buddy!");
+  //------------------------------------------------------------------------------------
+
   return (
     <PageHeader
       ghost={false}
-      title={<Link to="/">Chat Buddy</Link>}
+      title={<h1 className="appHeaderTitle"> {title} </h1>}
       extra={[
         <Button onClick={handleLogout} key="logout" type="primary">
           Logout

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { nanoid } from "nanoid";
 import { Layout, Menu, Spin } from "antd";
 import socket from "../socket/socket";
-import { useHistory } from "react-router-dom";
+import { useHistory ,useLocation  } from "react-router-dom";
 import {
   getAllUsersAsync,
   getAllFriendsAsync,
@@ -22,11 +22,23 @@ const { SubMenu } = Menu;
 const SideMenu = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [friends, setFriends] = useState([]);
-  const [selectedKey, setSelectedKey] = useState("2");
+  const [selectedKey, setSelectedKey] = useState("dashboard");
+  const [openedSubMenus, setOpenedSubMenus] = useState([]);
   const [loading, serLoading] = useState(true);
   const history = useHistory();
+  const location = useLocation();
+
+ 
+
+  
 
   useEffect(() => {
+    const currentSelectedKey = location.pathname.split("/").join("");
+    const currentOpenedMenus = currentSelectedKey === "chat" ? ["friends"] :[] 
+    setSelectedKey(currentSelectedKey);
+    setOpenedSubMenus(currentOpenedMenus)
+
+
     setUpFriendsAsync();
   }, []);
 
@@ -68,18 +80,45 @@ const SideMenu = () => {
         setCollapsed(!collapsed);
       }}
     >
-      <div className="logo" />
+      <div
+        className="logoContainer"
+        onClick={() => {
+          history.push("/");
+        }}
+      >
+        <img
+          src={"/images/logo.png"}
+          alt="profile-avatar"
+          className="logoContainer__img"
+        />
+      </div>
       <Menu
         theme="dark"
-        defaultSelectedKeys={history.location.to ?? "1"}
-        defaultOpenKeys={["friends"]}
+        defaultSelectedKeys={selectedKey}
+        defaultOpenKeys={openedSubMenus}
+        selectedKeys={[selectedKey]}
+        onOpenChange={(openedItem)=>{setOpenedSubMenus(openedItem)}}
+        openKeys={openedSubMenus}
         mode="inline"
       >
-        <Menu.Item key="1" icon={<PieChartOutlined />}>
-          Option 1
+        
+        <Menu.Item  onClick={()=>{history.push("/allPosts")}}
+          key="dashboard" icon={<PieChartOutlined />}>
+          Dashboard
         </Menu.Item>
-        <Menu.Item key="2" icon={<DesktopOutlined />}>
-          Option 2
+
+        <Menu.Item  onClick={()=>{history.push("/allPosts")}}
+          key="allPosts" icon={<PieChartOutlined />}>
+          All Posts
+        </Menu.Item>
+        <Menu.Item
+          onClick={() => {
+            history.push("/");
+          }}
+          key="2"
+          icon={<DesktopOutlined />}
+        >
+          Posts
         </Menu.Item>
 
         <SubMenu
@@ -103,7 +142,7 @@ const SideMenu = () => {
                     <div className="sideNavProfile__description">
                       <div className="sideNavProfile__imgContainer">
                         <img
-                          src={friend?.img ?? "/avatar.jpg"}
+                          src={friend?.img ?? "/images/avatar.png"}
                           alt="profile-avatar"
                           className="sideNavProfile__img"
                         />
