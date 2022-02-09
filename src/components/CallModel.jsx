@@ -130,12 +130,14 @@ const CallModel = (props) => {
       const myStream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: {
-          mandatory: {
-            googEchoCancellation: "false",
-            googNoiseSuppression: "false",
-            googHighpassFilter: "false",
-            echoCancellation: "false",
-          },
+          latency: 0.01,
+          sampleSize: 16,
+          volume: 0.8,
+          sampleRate: 44100,
+          googEchoCancellation: true,
+          googNoiseSuppression: true,
+          googHighpassFilter: true,
+          noiseSuppression: true,
         },
       });
 
