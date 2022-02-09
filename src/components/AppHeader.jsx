@@ -6,7 +6,7 @@ import { PageHeader, Button } from "antd";
 import { useState } from "react";
 
 const AppHeader = () => {
-  const { setAuth } = useAuth();
+  const { setAuth, curAuth } = useAuth();
   const history = useHistory();
   const handleLogout = () => {
     firebase
@@ -22,7 +22,9 @@ const AppHeader = () => {
   };
 
   //------------------------------------------------------------------------------------
-  const [title, setTitle] = useState("Welcom To Chat Buddy!");
+  const [title, setTitle] = useState(
+    `Welcome ${curAuth.userName || "Anonymous"} ! 👋`
+  );
   //------------------------------------------------------------------------------------
 
   return (

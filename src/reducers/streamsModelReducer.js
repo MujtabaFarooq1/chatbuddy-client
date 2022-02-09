@@ -1,13 +1,14 @@
 const streamModelReducer = (state, action) => {
+  // console.log("Action Payload is -->", action.payload);
   switch (action.type) {
     case "ADD_STREAM":
       return {
         myStreams: !state.myStreams[action.payload.id]
           ? [...state.myStreams, action.payload.streamToAdd]
           : [...state.myStreams],
-        myStreamId: action?.payload?.myStramId
-          ? action?.payload?.myStramId
-          : state.myStramId,
+        myStreamId: action?.payload?.myStreamId
+          ? action?.payload?.myStreamId
+          : state.myStreamId,
       };
     case "UPDATE_STREAM":
       return {
@@ -21,6 +22,10 @@ const streamModelReducer = (state, action) => {
           : [...state.myStreams],
       };
     case "REMOVE_SINGLE_STREAM":
+      const stream = state.myStreams.find(
+        (streamObj) => streamObj.id === action.payload.id
+      );
+      stream.getTracks().forEach((track) => track.stop());
       return {
         myStreams: [
           ...state.myStreams.filter(
@@ -29,8 +34,12 @@ const streamModelReducer = (state, action) => {
         ],
       };
     case "REMOVE_ALL_STREAMS":
+      state.myStreams.forEach((stream) => {
+        stream.getTracks().forEach((track) => track.stop());
+      });
       return {
         myStreams: [],
+        myStreamId: "null",
       };
 
     default:

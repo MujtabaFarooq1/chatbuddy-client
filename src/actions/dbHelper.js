@@ -1,5 +1,9 @@
+// import { ref, uploadBytes } from "firebase/storage";
 import database from "../firebase/firebase";
 import { getCurrentUser } from "../actions/users";
+import { storage } from "../firebase/firebase";
+import { nanoid } from "nanoid";
+import * as toxicity from "@tensorflow-models/toxicity";
 
 const getAllUsersAsync = async () => {
   //get all the users here
@@ -69,9 +73,212 @@ const checkIfUserExistWithId = async (uid) => {
   return user.val() ? true : false;
 };
 
+const getUserFromUid = async (uid) => {
+  return await (await database().ref(`users/${uid}`).once("value")).val();
+};
+
+const createPostAsync = async (uid, postData) => {
+  const { title, description, postImages } = postData;
+  const subFolder = "postImages/";
+  const postImageFolder = storage.ref(subFolder);
+  const currentTimeStamp = Math.round(new Date().getTime() / 1000);
+
+  const author = await getUserFromUid(uid);
+
+  if (author) {
+    try {
+      const images = postImages.map(async (file) => {
+        let fileNameTosave = file.name.split(".");
+        fileNameTosave = `${
+          fileNameTosave[0]
+        }-${currentTimeStamp}-${nanoid()}.${fileNameTosave[1]}`;
+
+        await postImageFolder.child(fileNameTosave).put(file);
+
+        return fileNameTosave;
+      });
+
+      const imgNames = await Promise.all(images);
+
+      await database().ref(`posts`).push({
+        createdBy: uid,
+        createdAt: currentTimeStamp,
+        postDescription: description,
+        postTitle: title,
+        postImages: imgNames,
+        authorId: uid,
+      });
+
+      return "Post Created !";
+    } catch (error) {
+      return error.message;
+    }
+  }
+
+  return "Something went wrong in creating post !";
+};
+
+const getPostImageUrl = async (fileName) => {
+  const subFolder = "postImages/";
+  const postImageFolder = storage.ref(subFolder);
+  const imgUrl = await postImageFolder.child(fileName).getDownloadURL();
+
+  return imgUrl;
+};
+
+const handlePostLike = async (postId, uid) => {
+  try {
+    if (!postId || !uid) {
+      throw new Error("Something is missing here !");
+    }
+
+    const postRef = await database().ref(`posts/${postId}`).once("value");
+    const post = postRef.val();
+    let tempPostLikes = [uid];
+
+    if (!post) {
+      throw new Error("Post Not found!");
+    }
+
+    const postLikes = post.likes;
+
+    if (postLikes) {
+      const alreadyLiked = postLikes.includes(uid);
+      if (!alreadyLiked) {
+        tempPostLikes = [...postLikes, uid];
+      } else {
+        tempPostLikes = postLikes.filter((likeId) => !likeId === uid);
+      }
+    }
+
+    await database().ref(`posts/${postId}/likes`).set(tempPostLikes);
+
+    return tempPostLikes;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+const getAllPosts = async (uid) => {
+  try {
+    const posts = await database().ref("posts").once("value");
+    const postsSnap = await posts.val();
+
+    const realPosts = Object.keys(postsSnap).map((key) => {
+      const postId = key;
+      const postData = postsSnap[key];
+      let isFav = false;
+
+      if (postData?.likes) {
+        isFav = postData?.likes?.length
+          ? postData?.likes?.includes(uid)
+          : postData.likes[Object.keys(postData.likes)[0]] === uid;
+      }
+
+      return {
+        postId,
+        isFav,
+        ...postsSnap[key],
+      };
+    });
+
+    return realPosts.sort((a, b) => b.createdAt - a.createdAt);
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+const getSinglePost = async (postId, uid) => {
+  if (!postId || !uid) {
+    throw new Error("Something went very wrong !");
+  }
+
+  try {
+    const post = await database().ref(`posts/${postId}`).once("value");
+    const postSnap = await post.val();
+    let isFav = false;
+
+    if (!postSnap) {
+      throw new Error("Post not found !");
+    }
+
+    if (postSnap?.likes) {
+      isFav = postSnap?.likes?.length
+        ? postSnap?.likes?.includes(uid)
+        : postSnap.likes[Object.keys(postSnap.likes)[0]] === uid;
+    }
+
+    return {
+      postId,
+      isFav,
+      ...postSnap,
+    };
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
+const addComment = async (postId, uid, comment) => {
+  try {
+    if (!postId || !uid || !comment) {
+      throw new Error("Something went very wrong !");
+    }
+
+    // The minimum prediction confidence.
+    const threshold = 0.9;
+    const moderationModel = await toxicity.load(threshold);
+    const predictions = await moderationModel.classify([comment]);
+    let mederationError = "";
+
+    predictions.forEach((prediction) => {
+      if (prediction.results[0].match) {
+        mederationError += ` ${prediction.label}`;
+      }
+    });
+
+    if (!!mederationError) {
+      throw new Error(
+        `Your comment is blocked due to (${mederationError}) Content `
+      );
+    }
+
+    const post = await database().ref(`posts/${postId}`).once("value");
+    const user = await database().ref(`users/${uid}`).once("value");
+    const userSnap = await user.val();
+    const postSnap = await post.val();
+
+    if (!postSnap || !userSnap) {
+      throw new Error("Sorry Invalid information  !");
+    }
+
+    const prevComments = postSnap?.comments || [];
+
+    const commentObjToAdd = {
+      comment,
+      commentedBy: uid,
+      createdAt: Math.round(new Date().getTime() / 1000),
+    };
+
+    await database()
+      .ref(`posts/${postId}/comments`)
+      .set([...prevComments, commentObjToAdd]);
+
+    return { ...commentObjToAdd, userName: user.userName, img: user?.img };
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export {
   getAllUsersAsync,
   getAllFriendsAsync,
   addFriendAsync,
   checkIfUserExistWithId,
+  createPostAsync,
+  getUserFromUid,
+  getAllPosts,
+  getPostImageUrl,
+  handlePostLike,
+  getSinglePost,
+  addComment,
 };

@@ -1,6 +1,8 @@
 import firebase from "firebase/app";
 import * as firebaseui from "firebaseui";
 import "firebase/database";
+import "firebase/storage";
+
 // import "firebase/auth";
 
 // Your web app's Firebase configuration
@@ -24,9 +26,11 @@ const database = firebase.database;
 
 const firebaseUi = new firebaseui.auth.AuthUI(firebase.auth());
 
+const storage = firebase.storage();
+
 // const firebaseUiWhole = firebaseui;
 
 // googleAuthProvider.addScope("profile");
 // googleAuthProvider.addScope("email");
 
-export { firebase, firebaseUi, database as default };
+export { firebase, firebaseUi, storage, database as default };

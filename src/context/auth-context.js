@@ -7,8 +7,8 @@ export const AuthContext = React.createContext({});
 //   userId: false,
 // };
 
-export const AuthProvider = ({ uid, children }) => {
-  const [curAuth, setAuth] = useState({ uid } || {});
+export const AuthProvider = ({ uid, children, userName }) => {
+  const [curAuth, setAuth] = useState({ uid, userName } || {});
   return (
     <AuthContext.Provider value={{ curAuth, setAuth }}>
       {children}

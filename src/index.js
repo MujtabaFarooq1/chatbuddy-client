@@ -8,14 +8,22 @@ import { AuthProvider } from "./context/auth-context";
 import CallModelProvider from "./context/callModelContext";
 import PeerModelProvider from "./context/peerModelContext";
 import StreamModelProvider from "./context/streamsModelContext";
+import TimeAgo from "javascript-time-ago";
+
+import en from "javascript-time-ago/locale/en.json";
+import ru from "javascript-time-ago/locale/ru.json";
+
 import "firebaseui/dist/firebaseui.css";
 import "antd/dist/antd.css";
+
 import "./App.css";
 import adapter from "webrtc-adapter";
 import { withErrorBoundary } from "react-error-boundary";
 
 //Global variable
 let hasRendered = false;
+TimeAgo.addDefaultLocale(en);
+TimeAgo.addLocale(ru);
 
 const Loading = () => {
   const { online } = useOnlineStatus();
@@ -28,7 +36,7 @@ const Loading = () => {
 
 ReactDOM.render(<Loading />, document.getElementById("root"));
 
-const MyApp = ({ uid }) => {
+const MyApp = ({ uid, userName }) => {
   const { online } = useOnlineStatus();
 
   useEffect(() => {
@@ -43,7 +51,7 @@ const MyApp = ({ uid }) => {
 
   return online ? (
     // ----------- Authentication Context provider -----------
-    <AuthProvider uid={uid}>
+    <AuthProvider uid={uid} userName={userName}>
       {/* // ----------- Call Model Context Provider ----------- */}
       <CallModelProvider>
         {/* // ----------- Peer Model Context Provider ----------- */}
@@ -64,52 +72,33 @@ const MyAppWithErrorBondry = withErrorBoundary(MyApp, {
   FallbackComponent: <h1>Oops Looks like something went wrong !</h1>,
   onError(error, info) {
     console.log(error, info);
-    // Do something with the error
-    // E.g. log to an error logging client here
   },
 });
 
-const renderApp = (uid) => {
+const renderApp = (uid, userName) => {
   if (!hasRendered) {
     ReactDOM.render(
-      <MyAppWithErrorBondry uid={uid} />,
+      <MyAppWithErrorBondry uid={uid} userName={userName} />,
       document.getElementById("root")
     );
     hasRendered = true;
   }
 };
-// const renderApp = (uid) => {
-//   if (!hasRendered) {
-//     connectToSocket(uid);
-//     ReactDOM.render(
-//       <AuthProvider uid={uid}>
-//         <CallModelProvider>
-//           <PeerModelProvider>
-//             <AppRouter />
-//           </PeerModelProvider>
-//         </CallModelProvider>
-//       </AuthProvider>,
-//       document.getElementById("root")
-//     );
-//     hasRendered = true;
-//   }
-// };
 
 firebase.auth().onAuthStateChanged((user) => {
   const uid = user?.uid;
-  console.log(adapter.browserDetails.browser);
+  const userName = user?.displayName;
+
   if (uid) {
     database()
       .ref(`users/${uid}`)
       .once("value")
       .then((snapshot) => {
-        // const snap = snapshot.val()[Object.keys(snapshot.val())[0]];
-        // console.log(snap);
         if (snapshot.val() == null) {
           database()
             .ref(`users/${uid}`)
             .set({
-              userName: user.displayName,
+              userName: userName || "Anonymous",
               email: user.email,
               img: user.photoURL,
             })
@@ -117,17 +106,11 @@ firebase.auth().onAuthStateChanged((user) => {
               console.log(ref);
             });
         }
-
-        // renderApp(uid);
       })
       .catch((error) => {
         console.log(error);
       });
   }
 
-  // renderApp(uid);
-  // if (curUser == null) {
-  // }
-
-  renderApp(uid);
+  renderApp(uid, userName);
 });

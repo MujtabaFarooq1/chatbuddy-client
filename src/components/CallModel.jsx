@@ -8,6 +8,8 @@ import { useAuth } from "../context/auth-context";
 import Peer from "simple-peer";
 import VideoStream from "./VideoStream";
 import { Container, Row, Col } from "react-grid-system";
+import Participants from "./Participants/Participants.component";
+import { Participant } from "./Participants/Participant/Participant.component";
 // import ConnectionObject from "../interfaces/ConnectionObject";
 
 const CallModel = (props) => {
@@ -15,6 +17,18 @@ const CallModel = (props) => {
   const { callModelState, callModelDispatch } = useCallModelContext();
   const { peerModelState, peerModelDispatch } = usePeerModelContext();
   const { streamModelState, streamModelDispatch } = useStreamModelContext();
+
+  let gridCol =
+    streamModelState.length === 1
+      ? 1
+      : streamModelState.myStreams.length <= 4
+      ? 2
+      : 4;
+  const gridColSize = streamModelState.myStreams.length <= 4 ? 1 : 2;
+  let gridRowSize =
+    streamModelState.myStreams.length <= 4
+      ? streamModelState.myStreams.length
+      : Math.ceil(streamModelState.myStreams.length / 2);
 
   useEffect(() => {
     if (socket._callbacks) {
@@ -115,7 +129,14 @@ const CallModel = (props) => {
     try {
       const myStream = await navigator.mediaDevices.getUserMedia({
         video: true,
-        audio: true,
+        audio: {
+          mandatory: {
+            googEchoCancellation: "false",
+            googNoiseSuppression: "false",
+            googHighpassFilter: "false",
+            echoCancellation: "false",
+          },
+        },
       });
 
       const peer = new Peer({
@@ -129,7 +150,7 @@ const CallModel = (props) => {
         payload: {
           id: myStream.id,
           streamToAdd: myStream,
-          myStramId: myStream.id,
+          myStreamId: myStream.id,
         },
       });
 
@@ -198,6 +219,7 @@ const CallModel = (props) => {
         onOk={() => {
           callModelDispatch({ type: "CLOSE" });
           streamModelDispatch({ type: "REMOVE_ALL_STREAMS" });
+          peerModelDispatch({ type: "DISCONNECT_PEER" });
           // const callRejectedToList = callModelState?.options?.to?.filter(
           //   (connectionObj) => connectionObj.uid !== curAuth.uid
           // );
@@ -210,22 +232,40 @@ const CallModel = (props) => {
       >
         {callModelState.modelState === "connected" ? (
           <div className="callModel-videoContainer">
-            {" "}
             Call Connected
-            {console.log(
+            {/* {console.log(
               "Its from the connected component -> ",
               streamModelState.myStreams,
               "My video tracks for first stream is ->",
               streamModelState.myStreams[0].getVideoTracks()
-            )}
+            )} */}
             <Container>
-              <Row>
+              {/* <Row>
                 {streamModelState.myStreams.map((stream) => (
                   <Col lg={6} md={4}>
                     <VideoStream stream={stream} key={stream.id} />
                   </Col>
                 ))}
-              </Row>
+              </Row> */}
+
+              <div
+                style={{
+                  "--grid-size": gridCol,
+                  "--grid-col-size": gridColSize,
+                  "--grid-row-size": gridRowSize,
+                }}
+                className={`participants`}
+              >
+                {streamModelState.myStreams.map((stream, index) => (
+                  <Participant
+                    stream={stream}
+                    currentParticipant={stream}
+                    curentIndex={index}
+                    showAvatar={true}
+                    currentUser={true}
+                  />
+                ))}
+              </div>
             </Container>
           </div>
         ) : callModelState.modelState === "ringing" ? (
@@ -238,7 +278,9 @@ const CallModel = (props) => {
             <Button onClick={handleAcceptCall}>Accept</Button>
           </div>
         ) : callModelState.modelState === "calling" ? (
-          <>Calling ...</>
+          <>
+            <div>Please wait we are connecting your call ...</div>
+          </>
         ) : (
           <>...</>
         )}

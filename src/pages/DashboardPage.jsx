@@ -103,7 +103,7 @@ const DashboardPage = () => {
 
   return (
     <div className="App">
-      <h1>Welcome Back !</h1>
+      <h1>Your Dashboard</h1>
       <div>
         <>
           <Divider orientation="left">Users</Divider>

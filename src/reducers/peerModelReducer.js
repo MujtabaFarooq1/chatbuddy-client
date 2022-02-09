@@ -5,6 +5,14 @@ const peerModelReducer = (state, action) => {
         myPeer: action?.payload?.peer,
       };
 
+    case "DISCONNECT_PEER":
+      state.myPeer.removeAllListeners();
+      state.myPeer.destroy();
+      console.log(state.myPeer);
+      return {
+        myPeer: null,
+      };
+
     default:
       return state;
   }

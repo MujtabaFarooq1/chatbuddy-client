@@ -135,17 +135,28 @@ const ChatPage = () => {
 
   const initializeVideoCall = async () => {
     try {
+      // const mediaContstraints = new MediaCon()
+
       const currentStream = await navigator.mediaDevices.getUserMedia({
         video: true,
-        audio: true,
+        audio: {
+          mandatory: {
+            googEchoCancellation: "false",
+            googNoiseSuppression: "false",
+            googHighpassFilter: "false",
+            echoCancellation: "false",
+          },
+        },
       });
+
+      console.log("My Stream Id will be -->", currentStream.id);
 
       streamModelDispatch({
         type: "ADD_STREAM",
         payload: {
           id: currentStream.id,
           streamToAdd: currentStream,
-          myStramId: currentStream.id,
+          myStreamId: currentStream.id,
         },
       });
 
@@ -199,6 +210,17 @@ const ChatPage = () => {
   return (
     <>
       <div className="chatContainer">
+        <div className="chatContainer__actions">
+          <Button
+            key="video-call"
+            onClick={() => {
+              initializeVideoCall();
+            }}
+            type="primary"
+          >
+            Video call
+          </Button>
+        </div>
         <div>
           {loading ? (
             <h1>Loading Be Patient ... </h1>
@@ -228,16 +250,6 @@ const ChatPage = () => {
 
               <Button key="send" type="primary" htmlType="submit">
                 Send
-              </Button>
-
-              <Button
-                key="video-call"
-                onClick={() => {
-                  initializeVideoCall();
-                }}
-                type="primary"
-              >
-                Video call
               </Button>
             </form>
           ) : (
