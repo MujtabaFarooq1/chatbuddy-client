@@ -12,6 +12,7 @@ import {
   DashboardPage,
   AllPostsPage,
   SinglePostPage,
+  ProfilePage,
 } from "../pages/index";
 
 import socket, { connectToSocket } from "../socket/socket";
@@ -33,8 +34,10 @@ const AppRouter = () => {
 
         {/* Private Routes ---------------------- */}
         <PrivateRoute path="/chat" component={ChatPage} />
-        <PrivateRoute path="/dashboard" component={DashboardPage} />
-        <PrivateRoute path="/allPosts" component={AllPostsPage} />
+        {/* <PrivateRoute path="/dashboard" component={DashboardPage} /> */}
+        <PrivateRoute path="/dashboard" component={AllPostsPage} />
+        <PrivateRoute path="/users" component={DashboardPage} />
+        <PrivateRoute path="/profile/:userId" component={ProfilePage} />
         <PrivateRoute path="/post/:postId" component={SinglePostPage} />
 
         {/* Available to everyone Routes ---------------------- */}

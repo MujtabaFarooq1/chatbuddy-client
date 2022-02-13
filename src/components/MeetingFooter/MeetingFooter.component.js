@@ -1,84 +1,60 @@
 import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faMicrophone,
-  faVideo,
-  faDesktop,
-  faVideoSlash,
-  faMicrophoneSlash,
-} from "@fortawesome/free-solid-svg-icons";
-import ReactTooltip from "react-tooltip";
+import { useStreamModelContext } from "../../context/streamsModelContext";
+
+// import ReactTooltip from "react-tooltip";
 import "./MeetingFooter.css";
 const MeetingFooter = (props) => {
-  const [streamState, setStreamState] = useState({
-    mic: true,
-    video: false,
-    screen: false,
-  });
+  const { streamModelState, streamModelDispatch } = useStreamModelContext();
+  const myStreamId = streamModelState.myStreamId;
+
   const micClick = () => {
-    setStreamState((currentState) => {
-      return {
-        ...currentState,
-        mic: !currentState.mic,
-      };
-    });
+    streamModelDispatch({ type: "MUTE_MY_STREAM" });
   };
 
-  const onVideoClick = () => {
-    setStreamState((currentState) => {
-      return {
-        ...currentState,
-        video: !currentState.video,
-      };
-    });
-  };
+  const onVideoClick = () => {};
 
   const onScreenClick = () => {
     props.onScreenClick(setScreenState);
   };
 
-  const setScreenState = (isEnabled) => {
-    setStreamState((currentState) => {
-      return {
-        ...currentState,
-        screen: isEnabled,
-      };
-    });
-  };
-  useEffect(() => {
-    props.onMicClick(streamState.mic);
-  }, [streamState.mic]);
-  useEffect(() => {
-    props.onVideoClick(streamState.video);
-  }, [streamState.video]);
+  const setScreenState = (isEnabled) => {};
+  // useEffect(() => {
+  //   props.onMicClick(streamState.mic);
+  // }, [streamState.mic]);
+  // useEffect(() => {
+  //   props.onVideoClick(streamState.video);
+  // }, [streamState.video]);
   return (
     <div className="meeting-footer">
       <div
-        className={"meeting-icons " + (!streamState.mic ? "active" : "")}
-        data-tip={streamState.mic ? "Mute Audio" : "Unmute Audio"}
+        className={"meeting-icons " + (!false ? "active" : "")}
+        data-tip={!false ? "Mute Audio" : "Unmute Audio"}
         onClick={micClick}
       >
-        <FontAwesomeIcon
+        Mute Icon
+        {/* <FontAwesomeIcon
           icon={!streamState.mic ? faMicrophoneSlash : faMicrophone}
           title="Mute"
-        />
+        /> */}
       </div>
       <div
-        className={"meeting-icons " + (!streamState.video ? "active" : "")}
-        data-tip={streamState.video ? "Hide Video" : "Show Video"}
+        className={"meeting-icons " + (!false.video ? "active" : "")}
+        data-tip={false ? "Hide Video" : "Show Video"}
         onClick={onVideoClick}
       >
-        <FontAwesomeIcon icon={!streamState.video ? faVideoSlash : faVideo} />
+        Mute Video
+        {/* <FontAwesomeIcon icon={!streamState.video ? faVideoSlash : faVideo} /> */}
       </div>
       <div
         className="meeting-icons"
         data-tip="Share Screen"
         onClick={onScreenClick}
-        disabled={streamState.screen}
+        disabled={false}
       >
-        <FontAwesomeIcon icon={faDesktop} />
+        {/* <FontAwesomeIcon icon={faDesktop} /> */}
+        Share Screen
       </div>
-      <ReactTooltip />
+      {/* <ReactTooltip /> */}
     </div>
   );
 };

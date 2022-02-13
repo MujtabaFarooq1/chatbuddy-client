@@ -6,10 +6,13 @@ import { usePeerModelContext } from "../context/peerModelContext";
 import { useStreamModelContext } from "../context/streamsModelContext";
 
 import MessageList from "../components/MessageList";
-import { useLocation } from "react-router-dom";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { Input, Button } from "antd";
-import { checkIfUserExistWithId } from "../actions/dbHelper";
+import {
+  checkIfUserExistWithId,
+  getAllChatMessagesForRoom,
+  sendMessagePermanent,
+} from "../actions/dbHelper";
 import { useAuth } from "../context/auth-context";
 import { nanoid } from "nanoid";
 import { getCurrentUserUserName } from "../actions/users";
@@ -52,32 +55,18 @@ const ChatPage = () => {
           friendsRoomId,
           myRoomId,
         });
-
-        socket.on("room-msg-recieve", ({ message: currentMessage, from }) => {
-          // currentMessage.type = "receive";
-          if (!unmounted) {
-            setMessages((previousMessages) => {
-              currentMessage.type = "receive";
-              return [...previousMessages, currentMessage];
-            });
-          }
-        });
-
-        socket.on("initialMessages", ({ initialChatMessages }) => {
-          if (!unmounted) {
-            filterAndSetInitialMessages(initialChatMessages);
-          }
-        });
-
-        // console.log("Socket Callbacks are -> ", socket._callbacks);
-
-        setLoading(false);
       } else {
         history.push("/");
       }
     };
 
     initializeThings();
+
+    getAllChatMessagesForRoom(currentRoomId).then((res) => {
+      setLoading(false);
+      setMessages([...res]);
+      // console.log("Prev Messages are -->", res);
+    });
 
     // Cleanup
     return () => {
@@ -103,6 +92,7 @@ const ChatPage = () => {
         type: "send",
         status: "",
         senderName: getCurrentUserUserName(),
+        createdAt: Math.round(new Date().getTime() / 1000),
       };
 
       socket.emit("room-msg", {
@@ -115,6 +105,8 @@ const ChatPage = () => {
       setMessages((previousMessages) => {
         return [...previousMessages, message];
       });
+
+      sendMessagePermanent(currentRoomId, message);
 
       setInputMessage("");
     }
@@ -150,8 +142,6 @@ const ChatPage = () => {
           noiseSuppression: true,
         },
       });
-
-      console.log("My Stream Id will be -->", currentStream.id);
 
       streamModelDispatch({
         type: "ADD_STREAM",
@@ -190,7 +180,7 @@ const ChatPage = () => {
       });
 
       peer.on("stream", (currentStream) => {
-        console.log("I got the stream ->", currentStream);
+        // console.log("I got the stream ->", currentStream);
 
         streamModelDispatch({
           type: "ADD_STREAM",

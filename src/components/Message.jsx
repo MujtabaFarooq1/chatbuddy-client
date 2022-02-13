@@ -1,8 +1,20 @@
+import { useAuth } from "../context/auth-context";
+import moment from "moment";
+
 const Message = ({ message }) => {
+  const { curAuth } = useAuth();
+  console.log(message);
   return (
     // <p className={`message ${message.type ?? "sent"}`}>{message.content}</p>
     <>
-      <p className={`message ${message.type ?? "send"}`}>
+      <p
+        className={`message ${
+          message.from === curAuth.uid ? "send" : "receive"
+        }`}
+      >
+        <span className="messageCreatedAt">
+          {moment(message.createdAt * 1000).fromNow()}
+        </span>
         <span className="messageSentBy">
           {message?.senderName ?? "Anonymous"}:-
         </span>

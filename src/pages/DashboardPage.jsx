@@ -118,7 +118,12 @@ const DashboardPage = () => {
                     lg={3}
                     md={8}
                   >
-                    <div className="user-content-wrapper">
+                    <div
+                      className="user-content-wrapper"
+                      onClick={() => {
+                        history.push(`/profile/${user.uid}`);
+                      }}
+                    >
                       {user.img ? (
                         <Image className="userImage" src={user.img} />
                       ) : (
@@ -160,7 +165,12 @@ const DashboardPage = () => {
                     lg={3}
                     md={8}
                   >
-                    <div className="user-content-wrapper">
+                    <div
+                      className="user-content-wrapper"
+                      onClick={() => {
+                        history.push(`/profile/${friend.uid}`);
+                      }}
+                    >
                       {friend.img ? (
                         <Image className="userImage" src={friend.img} />
                       ) : (

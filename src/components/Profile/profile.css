@@ -1,0 +1,124 @@
+.profilePage {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 20%);
+}
+
+.profilePage .ant-tabs-tab {
+  font-size: 1.2rem;
+}
+
+.profilePage__Container {
+  padding: 1rem;
+}
+
+.profilePage__header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.profilePage__img {
+  border-radius: 50%;
+  overflow: hidden;
+  background: #ebebeb;
+  max-height: 230px !important;
+  max-width: 230px !important;
+  height: 230px !important;
+  width: 230px !important;
+  object-fit: cover;
+}
+
+.profilePage__metaContainer {
+  margin-left: 1rem;
+  font-size: 1.3rem;
+}
+
+.profilePage__descriptionContainer {
+  text-transform: capitalize;
+  color: #545454;
+  font-size: 15px;
+  width: 95%;
+  margin: 0 auto;
+}
+
+@media only screen and (max-width: 800px) {
+  .profilePage__header {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .profilePage__metaContainer {
+    width: 100%;
+    font-size: 1.2rem;
+    text-align: center;
+    line-height: 12px;
+    margin: 0;
+    margin-top: 1rem;
+  }
+  .profilePage__descriptionContainer {
+    text-align: center;
+    font-size: 13px;
+  }
+}
+
+.profilePage__tab__friend {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 5px;
+  border: 1px solid #dbd1d1;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s linear;
+  transform: scale(0.98);
+}
+
+.profilePage__tab__friend:hover {
+  transform: scale(1);
+  background: rgb(244, 241, 255);
+}
+
+.profilePage__tab__friend__desc {
+  margin-left: 1.5rem;
+  font-size: 1rem;
+}
+
+.profilePage__tab__friend__desc p {
+  margin: 0;
+}
+
+.profilePage__tab__friend__img {
+  height: 100px !important;
+  width: 100px !important;
+  background: rgb(228, 226, 226);
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+/* Profile Edit Modal */
+.avatar-uploader .ant-upload-select {
+  width: 200px !important;
+  height: 200px !important;
+  overflow: hidden;
+  padding: 7px;
+}
+
+.profileImageUploader {
+  width: 100%;
+  border-radius: 50%;
+  background: rgb(229, 229, 229);
+  height: 100%;
+  object-fit: cover;
+}
+
+.profileUpdateForm .formAvatarUpload {
+  width: 100%;
+  display: block;
+  text-align: center;
+}
+
+.profileUpdateForm .ant-form-item .ant-form-item-control {
+  margin: 0 auto;
+}

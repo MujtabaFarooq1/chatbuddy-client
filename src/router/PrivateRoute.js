@@ -3,7 +3,7 @@ import useOnlineStatus from "../hooks/useOnlineStatus";
 import { useCallModelContext } from "../context/callModelContext";
 import { useAuth } from "../context/auth-context";
 import { Layout } from "antd";
-import AppHeader from "../components/AppHeader";
+// import AppHeader from "../components/AppHeader";
 import SideMenu from "../components/SideMenu";
 import AppFooter from "../components/AppFooter";
 import ContentWrapper from "../components/ContentWrapper";
@@ -87,7 +87,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
           <Layout>
             <SideMenu />
             <Layout>
-              <AppHeader />
+              {/* <AppHeader /> */}
               <ContentWrapper>
                 <Component {...props} />
               </ContentWrapper>

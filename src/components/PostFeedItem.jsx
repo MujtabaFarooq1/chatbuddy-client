@@ -7,7 +7,7 @@ import {
   CommentOutlined,
   LoadingOutlined,
 } from "@ant-design/icons";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { nanoid } from "nanoid";
 import { useAuth } from "../context/auth-context";
 import { getUserFromUid, handlePostLike } from "../actions/dbHelper";
@@ -122,11 +122,16 @@ const PostFeedItem = ({
                 />
                 <div className="postFeedAuthorDescription">
                   <div>
-                    <h1 className="postFeedAuthorName">
+                    <h1
+                      className="postFeedAuthorName"
+                      onClick={() => {
+                        history.push(`/profile/${postData.authorId}`);
+                      }}
+                    >
                       {authorData.userName || "Anonymous"}
                     </h1>
                     <p className="postFeedTimeAgo">
-                      Created{" "}
+                      Created
                       <ReactTimeAgo
                         date={new Date(postData.createdAt * 1000)}
                         locale="en-US"

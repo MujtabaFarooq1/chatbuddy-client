@@ -21,6 +21,21 @@ const streamModelReducer = (state, action) => {
             })
           : [...state.myStreams],
       };
+    case "MUTE_MY_STREAM":
+      console.log("Mute Stream dispatched");
+      const streamToMute = state.myStreams.find(
+        (streamObj) => streamObj.id === state.myStreamId
+      );
+      streamToMute.getAudioTracks().enabled = false;
+      const streamsAfterMyStreamMuted = [...state.myStreams].filter(
+        (streamObj) => {
+          return streamObj.id !== state.myStreamId;
+        }
+      );
+      return {
+        myStreams: [...streamsAfterMyStreamMuted, streamToMute],
+        myStreamId: state.myStreamId,
+      };
     case "REMOVE_SINGLE_STREAM":
       const stream = state.myStreams.find(
         (streamObj) => streamObj.id === action.payload.id

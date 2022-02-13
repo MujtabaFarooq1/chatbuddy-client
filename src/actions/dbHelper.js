@@ -4,6 +4,7 @@ import { getCurrentUser } from "../actions/users";
 import { storage } from "../firebase/firebase";
 import { nanoid } from "nanoid";
 import * as toxicity from "@tensorflow-models/toxicity";
+import { message } from "antd";
 
 const getAllUsersAsync = async () => {
   //get all the users here
@@ -269,6 +270,105 @@ const addComment = async (postId, uid, comment) => {
   }
 };
 
+const getAllChatMessagesForRoom = async (roomId) => {
+  const allMessages = await database().ref(`chats/${roomId}`).once("value");
+  const allMessagesSnap = await allMessages.val();
+
+  if (!allMessagesSnap) {
+    return [];
+  }
+
+  return allMessagesSnap;
+};
+
+const sendMessagePermanent = async (roomId, newMessage) => {
+  try {
+    if (!roomId && !newMessage) {
+      throw new Error("Something went very wrong!");
+    }
+    const prevMessages = await getAllChatMessagesForRoom(roomId);
+    delete newMessage["type"];
+    const messageListToSave = [...prevMessages, newMessage];
+
+    await database().ref(`chats/${roomId}`).set(messageListToSave);
+  } catch (err) {
+    throw new Error("Message saving failed!");
+  }
+};
+
+const getPostsOfUser = async (uid, myUid) => {
+  try {
+    if (!uid) {
+      throw new Error("Sorry Something went wrong!");
+    }
+
+    const posts = await database().ref(`posts`).once("value");
+    const allPosts = await posts.val();
+
+    const realPosts = Object.keys(allPosts).map((key) => {
+      const postId = key;
+      const postData = allPosts[key];
+      let isFav = false;
+
+      if (postData?.likes) {
+        isFav = postData?.likes?.length
+          ? postData?.likes?.includes(myUid)
+          : postData.likes[Object.keys(postData.likes)[0]] === uid;
+      }
+
+      return {
+        postId,
+        isFav,
+        ...allPosts[key],
+      };
+    });
+
+    const usersPosts = realPosts?.filter((post) => post.createdBy === uid);
+
+    return [...usersPosts];
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const updateUserProfile = async (uid, update) => {
+  if (!uid && !update) {
+    throw new Error("Somthing went very wrong");
+  }
+
+  try {
+    const uploadImage =
+      update?.newProfileImage?.fileList[
+        update.newProfileImage?.fileList.length - 1
+      ].originFileObj;
+
+    if (uploadImage) {
+      const subFolder = "usersProfileImages/";
+      const profileImageFolder = storage.ref(subFolder);
+      let fileNameTosave = uploadImage.name.split(".");
+      const currentTimeStamp = Math.round(new Date().getTime() / 1000);
+      fileNameTosave = `${fileNameTosave[0]}-${currentTimeStamp}-${nanoid()}.${
+        fileNameTosave[1]
+      }`;
+
+      await profileImageFolder.child(fileNameTosave).put(uploadImage);
+
+      const imgUrl = await profileImageFolder
+        .child(fileNameTosave)
+        .getDownloadURL();
+
+      update["img"] = imgUrl;
+
+      delete update["newProfileImage"];
+    }
+
+    const updatedRes = await database().ref(`users/${uid}`).update(update);
+    return updatedRes;
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
 export {
   getAllUsersAsync,
   getAllFriendsAsync,
@@ -281,4 +381,8 @@ export {
   handlePostLike,
   getSinglePost,
   addComment,
+  sendMessagePermanent,
+  getAllChatMessagesForRoom,
+  getPostsOfUser,
+  updateUserProfile,
 };

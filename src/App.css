@@ -1,3 +1,21 @@
+.primaryHeading {
+  display: inline-block;
+  padding: 5px;
+  font-size: 2rem;
+  width: 100%;
+  text-transform: capitalize;
+  color: #3e3e3e;
+  font-family: inherit;
+  font-weight: 400;
+}
+
+@media only screen and (max-width: 800px) {
+  .primaryHeading {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+}
+
 #root {
   height: 100vh;
 }
@@ -50,12 +68,13 @@
 .message {
   max-width: 300px;
   word-wrap: break-word;
-  margin-bottom: 12px;
+  margin-bottom: 1.7rem;
   line-height: 24px;
   position: relative;
   padding: 10px 20px;
   border-radius: 25px;
   font-size: 1rem;
+  width: 100%;
 }
 
 .messageSentBy {
@@ -123,6 +142,12 @@
 .messageStatus {
   display: block;
   font-size: 15px;
+}
+
+.messageCreatedAt {
+  position: absolute;
+  top: -1.4rem;
+  color: #5e5d5d;
 }
 
 .send .messageStatus {
