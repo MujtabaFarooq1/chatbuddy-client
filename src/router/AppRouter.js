@@ -13,6 +13,7 @@ import {
   AllPostsPage,
   SinglePostPage,
   ProfilePage,
+  AllFriendsPage,
 } from "../pages/index";
 
 import socket, { connectToSocket } from "../socket/socket";
@@ -35,6 +36,8 @@ const AppRouter = () => {
         {/* Private Routes ---------------------- */}
         <PrivateRoute path="/chat" component={ChatPage} />
         {/* <PrivateRoute path="/dashboard" component={DashboardPage} /> */}
+
+        <PrivateRoute path="/myFriends" component={AllFriendsPage} />
         <PrivateRoute path="/dashboard" component={AllPostsPage} />
         <PrivateRoute path="/users" component={DashboardPage} />
         <PrivateRoute path="/profile/:userId" component={ProfilePage} />

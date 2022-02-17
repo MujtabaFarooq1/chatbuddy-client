@@ -32,6 +32,7 @@ const PostFeedItem = ({
   itemWrapperCustomStyles,
   clickToRedirect,
   noCommentCount,
+  hoverEffect,
 }) => {
   //----------------------------------
   const {
@@ -97,7 +98,9 @@ const PostFeedItem = ({
 
   return (
     <div
-      className="postFeedCartContainer"
+      className={`postFeedCartContainer ${
+        hoverEffect ? "postFeedCartContainerHoverEffect" : ""
+      }`}
       style={{ ...itemWrapperCustomStyles }}
       onClick={handlePostItemClick}
     >

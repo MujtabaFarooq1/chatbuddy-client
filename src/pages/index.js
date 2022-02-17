@@ -4,6 +4,7 @@ import DashboardPage from "./DashboardPage";
 import LoginPage from "./LoginPage";
 import SinglePostPage from "./SinglePostPage";
 import ProfilePage from "./ProfilePage";
+import AllFriendsPage from "./AllFriends";
 
 export {
   AllPostsPage,
@@ -12,4 +13,5 @@ export {
   LoginPage,
   SinglePostPage,
   ProfilePage,
+  AllFriendsPage,
 };

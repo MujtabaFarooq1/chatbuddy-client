@@ -24,6 +24,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-time-ago": "^7.1.7",
+    "react-tsparticles": "^1.41.2",
     "serve": "^13.0.2",
     "simple-peer": "^9.11.0",
     "socket.io-client": "^4.1.3",

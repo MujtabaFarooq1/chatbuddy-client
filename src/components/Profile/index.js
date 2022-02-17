@@ -59,9 +59,11 @@ function Profile({ profileData, userId }) {
         setAllPostsLoading(false);
       });
 
-    const newFrndList = Object.keys(profileData?.friends).map((key) => {
-      return { friendId: key, ...profileData?.friends[key] };
-    });
+    const newFrndList = profileData?.friends
+      ? Object.keys(profileData?.friends).map((key) => {
+          return { friendId: key, ...profileData?.friends[key] };
+        })
+      : [];
 
     setFriendsOfUser([...newFrndList]);
   }, []);

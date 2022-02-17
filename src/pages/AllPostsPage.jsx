@@ -43,7 +43,7 @@ const AllPostsPage = ({ wordsToShow = 200 }) => {
         </Button>
       </div>
 
-      <h1> Recent Posts </h1>
+      <h1 className="secondaryHeading"> Recent Posts </h1>
 
       <div className="postFeed">
         {!allPostsLoading ? (
@@ -57,6 +57,7 @@ const AllPostsPage = ({ wordsToShow = 200 }) => {
                     wordsToShow={wordsToShow}
                     isFav={post.isFav}
                     clickToRedirect={true}
+                    hoverEffect={true}
                   />
                 ))}
               </>

@@ -12,12 +12,14 @@ import { UserOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 import { nanoid } from "nanoid";
 import { width } from "@mui/system";
+import SearchBox from "../components/searchBox";
 
 // import database from "../firebase/firebase";
 
 const DashboardPage = () => {
   // const [user, setUser] = useState({});
   const [friends, setFriends] = useState([]);
+  const [usersToShow, setUsersToShow] = useState([]);
   const [usersList, setUserList] = useState([]);
   const [loading, setLoading] = useState(true);
   const history = useHistory();
@@ -60,6 +62,7 @@ const DashboardPage = () => {
     });
 
     setUserList(allUsers);
+    setUsersToShow(allUsers);
     setLoading(false);
   };
 
@@ -87,30 +90,44 @@ const DashboardPage = () => {
     return flag;
   };
 
-  const gotoUserRoom = (roomId) => {
-    try {
-      if (socket.connected === false) {
-        throw new Error("Server Connection Error!");
-      }
-      history.push({
-        pathname: `/chat`,
-        to: roomId,
-      });
-    } catch (err) {
-      console.log(err);
+  const filterUsersByText = (textToSearchBy) => {
+    if (!usersList) {
+      return console.log(
+        "You are friend with Everyone on our app , but wait new users are coming"
+      );
     }
+
+    let searchedUsers = [];
+
+    usersList.forEach((user) => {
+      if (user.userName.toLowerCase().includes(textToSearchBy)) {
+        searchedUsers.push(user);
+      } else if (
+        user.email &&
+        user.email.toLowerCase().includes(textToSearchBy)
+      ) {
+        searchedUsers.push(user);
+      }
+    });
+
+    setUsersToShow(searchedUsers);
   };
 
   return (
-    <div className="App">
-      <h1>Your Dashboard</h1>
+    <div>
+      <h1> Make New Friends </h1>
       <div>
+        <SearchBox
+          searchButtonTitle="Search Users"
+          searchFunction={filterUsersByText}
+        />
         <>
-          <Divider orientation="left">Users</Divider>
+          <Divider orientation="left"></Divider>
           <Container>
             <Row debug>
               {!loading ? (
-                usersList.map((user) => (
+                usersToShow &&
+                usersToShow.map((user) => (
                   <Col
                     key={user.uid}
                     className="gutter-row"
@@ -139,53 +156,6 @@ const DashboardPage = () => {
                         type="primary"
                       >
                         Add Friend
-                      </Button>
-                    </div>
-                  </Col>
-                ))
-              ) : (
-                <Skeleton avatar active paragraph={{ rows: 4 }} />
-              )}
-            </Row>
-          </Container>
-        </>
-      </div>
-
-      <div>
-        <>
-          <Divider orientation="left">Friends</Divider>
-          <Container>
-            <Row debug>
-              {!loading ? (
-                friends.map((friend) => (
-                  <Col
-                    key={friend.uid}
-                    className="gutter-row"
-                    sm={12}
-                    lg={3}
-                    md={8}
-                  >
-                    <div
-                      className="user-content-wrapper"
-                      onClick={() => {
-                        history.push(`/profile/${friend.uid}`);
-                      }}
-                    >
-                      {friend.img ? (
-                        <Image className="userImage" src={friend.img} />
-                      ) : (
-                        <Avatar size={100} icon={<UserOutlined />} />
-                      )}
-
-                      <h3>{friend.userName}</h3>
-                      <Button
-                        onClick={() => {
-                          gotoUserRoom(friend.uid);
-                        }}
-                        key="goToChat"
-                        type="primary"
-                      >
-                        Message
                       </Button>
                     </div>
                   </Col>

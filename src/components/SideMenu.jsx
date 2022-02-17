@@ -15,6 +15,7 @@ import {
   UserOutlined,
   ProfileOutlined,
   UsergroupAddOutlined,
+  MessageOutlined,
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
@@ -122,19 +123,19 @@ const SideMenu = () => {
 
         <Menu.Item
           onClick={() => {
-            history.push("/friends");
+            history.push("/myFriends");
           }}
           key="allFriends"
           icon={<UserOutlined />}
         >
-          Show All Friends
+          My Friends
         </Menu.Item>
 
         <SubMenu
           className="friends__container"
           key="friends"
-          icon={<UserOutlined />}
-          title="Friends"
+          icon={<MessageOutlined />}
+          title="Quick Chat"
         >
           {!loading ? (
             friends.map((friend) => {
