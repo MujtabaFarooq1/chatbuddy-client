@@ -10,6 +10,7 @@ import VideoStream from "./VideoStream";
 import { Container, Row, Col } from "react-grid-system";
 import Participants from "./Participants/Participants.component";
 import { Participant } from "./Participants/Participant/Participant.component";
+
 // import ConnectionObject from "../interfaces/ConnectionObject";
 
 const CallModel = (props) => {
@@ -17,6 +18,9 @@ const CallModel = (props) => {
   const { callModelState, callModelDispatch } = useCallModelContext();
   const { peerModelState, peerModelDispatch } = usePeerModelContext();
   const { streamModelState, streamModelDispatch } = useStreamModelContext();
+
+  const ringModelSource = `https://firebasestorage.googleapis.com/v0/b/chat-buddy-d6954.appspot.com/o/sounds%2FgoingCall.mp3?alt=media&token=e5c709cb-6569-4636-b8ef-6215a26cab9b`;
+  const incommingCallRing = `https://firebasestorage.googleapis.com/v0/b/chat-buddy-d6954.appspot.com/o/sounds%2FincomingCall.mp3?alt=media&token=922f614d-8a67-4459-8096-01836e8939bd`;
 
   let gridCol =
     streamModelState.length === 1
@@ -235,21 +239,7 @@ const CallModel = (props) => {
         {callModelState.modelState === "connected" ? (
           <div className="callModel-videoContainer">
             Call Connected
-            {/* {console.log(
-              "Its from the connected component -> ",
-              streamModelState.myStreams,
-              "My video tracks for first stream is ->",
-              streamModelState.myStreams[0].getVideoTracks()
-            )} */}
             <Container>
-              {/* <Row>
-                {streamModelState.myStreams.map((stream) => (
-                  <Col lg={6} md={4}>
-                    <VideoStream stream={stream} key={stream.id} />
-                  </Col>
-                ))}
-              </Row> */}
-
               <div
                 style={{
                   "--grid-size": gridCol,
@@ -272,6 +262,14 @@ const CallModel = (props) => {
           </div>
         ) : callModelState.modelState === "ringing" ? (
           <div>
+            <audio
+              controls={false}
+              autoPlay={true}
+              loop={true}
+              style={{ display: "none" }}
+            >
+              <source src={incommingCallRing} />
+            </audio>
             <h3>
               Recieving {callModelState?.options?.to?.length > 2 ?? "Group"}{" "}
               call from - {callModelState?.options?.initiatorName}
@@ -281,6 +279,14 @@ const CallModel = (props) => {
           </div>
         ) : callModelState.modelState === "calling" ? (
           <>
+            <audio
+              controls={false}
+              autoPlay={true}
+              loop={true}
+              style={{ display: "none" }}
+            >
+              <source src={ringModelSource} />
+            </audio>
             <div>Please wait we are connecting your call ...</div>
           </>
         ) : (

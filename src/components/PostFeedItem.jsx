@@ -143,7 +143,7 @@ const PostFeedItem = ({
                       {authorData.userName || "Anonymous"}
                     </h1>
                     <p className="postFeedTimeAgo">
-                      Created
+                      Created{" "}
                       <ReactTimeAgo
                         date={new Date(postData.createdAt * 1000)}
                         locale="en-US"
