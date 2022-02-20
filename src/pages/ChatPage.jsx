@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 // import { getCurrentUser } from "../actions/users";
 import socket from "../socket/socket";
 import { useCallModelContext } from "../context/callModelContext";
@@ -6,7 +6,7 @@ import { usePeerModelContext } from "../context/peerModelContext";
 import { useStreamModelContext } from "../context/streamsModelContext";
 
 import MessageList from "../components/MessageList";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import { Input, Button, message } from "antd";
 import {
   checkIfUserExistWithId,
@@ -24,11 +24,11 @@ import ConnectionObject from "../interfaces/ConnectionObject";
 const ChatPage = () => {
   const history = useHistory();
   const { curAuth } = useAuth();
-  const location = useLocation();
+  const { friendId } = useParams();
   const [currentRoomId, setCurrentRoomId] = useState(
-    (location.to + curAuth.uid).split("").sort().join("")
+    (friendId + curAuth.uid).split("").sort().join("")
   );
-  const [friendsRoomId, setFriendsRoomId] = useState(location.to);
+  const [friendsRoomId, setFriendsRoomId] = useState(friendId);
   const [myRoomId, setMyRoomId] = useState(curAuth.uid);
   const [inputMessage, setInputMessage] = useState("");
   const [myName, setMyName] = useState(curAuth.userName);
@@ -40,17 +40,14 @@ const ChatPage = () => {
   const { peerModelState, peerModelDispatch } = usePeerModelContext();
   const { streamModelState, streamModelDispatch } = useStreamModelContext();
 
-  const messageListRef = useRef();
-
-  messageListRef.current = messages;
-
   useEffect(() => {
     // console.log("Joined room id is -> ", currentRoomId);
 
     let unmounted = false;
 
     const initializeThings = async () => {
-      const userExists = await checkIfUserExistWithId(friendsRoomId);
+      // const userExists = await checkIfUserExistWithId(friendsRoomId);
+      const userExists = true;
 
       if (userExists) {
         //Join Room
@@ -70,7 +67,7 @@ const ChatPage = () => {
     getAllChatMessagesForRoom(currentRoomId).then((res) => {
       setLoading(false);
       setMessages([...res]);
-      console.log("Prev Messages are -->", res);
+      // console.log("Prev Messages are -->", res);
     });
 
     // Cleanup
@@ -84,10 +81,6 @@ const ChatPage = () => {
       console.log("Component destroyed");
     };
   }, []);
-
-  // useEffect(() => {
-  //   handleMessageReceive();
-  // });
 
   const handleMessageSend = (e) => {
     e.preventDefault();

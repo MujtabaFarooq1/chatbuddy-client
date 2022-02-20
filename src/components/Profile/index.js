@@ -82,7 +82,8 @@ function Profile({ profileData, userId }) {
     );
 
     if (Object.keys(filterdFormData).length === 0) {
-      return console.log("Kindly Fill the data to change!");
+      return;
+      console.log("Kindly Fill the data to change!");
     }
 
     updateUserProfile(uid, filterdFormData)

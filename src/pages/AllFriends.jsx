@@ -47,8 +47,7 @@ const AllFriendsPage = () => {
         throw new Error("Server Connection Error!");
       }
       history.push({
-        pathname: `/chat`,
-        to: roomId,
+        pathname: `/chat/${roomId}`,
       });
     } catch (err) {
       console.log(err);
@@ -57,7 +56,8 @@ const AllFriendsPage = () => {
 
   const filterFriendsByText = (textToSearchBy) => {
     if (!friends) {
-      return console.log("Try creating friends to search thankyou!");
+      return;
+      console.log("Try creating friends to search thankyou!");
     }
 
     let searchedFriends = [];
@@ -94,19 +94,21 @@ const AllFriendsPage = () => {
                     lg={3}
                     md={8}
                   >
-                    <div
-                      className="user-content-wrapper"
-                      onClick={() => {
-                        history.push(`/profile/${friend.uid}`);
-                      }}
-                    >
+                    <div className="user-content-wrapper">
                       {friend.img ? (
                         <Image className="userImage" src={friend.img} />
                       ) : (
                         <Avatar size={100} icon={<UserOutlined />} />
                       )}
 
-                      <h3>{friend.userName}</h3>
+                      <h3
+                        className="goToProfileHeading"
+                        onClick={() => {
+                          history.push(`/profile/${friend.uid}`);
+                        }}
+                      >
+                        {friend.userName}
+                      </h3>
                       <Button
                         onClick={() => {
                           gotoUserRoom(friend.uid);

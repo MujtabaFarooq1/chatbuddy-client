@@ -9,6 +9,16 @@
   font-weight: 400;
 }
 
+.goToProfileHeading {
+  transition: all 0.3s;
+  font-size: 1.1rem;
+}
+
+.goToProfileHeading:hover {
+  color: #3a8fd5;
+  font-size: 1.2rem;
+}
+
 @media only screen and (max-width: 800px) {
   .primaryHeading {
     font-size: 1.8rem;

@@ -135,19 +135,21 @@ const DashboardPage = () => {
                     lg={3}
                     md={8}
                   >
-                    <div
-                      className="user-content-wrapper"
-                      onClick={() => {
-                        history.push(`/profile/${user.uid}`);
-                      }}
-                    >
+                    <div className="user-content-wrapper">
                       {user.img ? (
                         <Image className="userImage" src={user.img} />
                       ) : (
                         <Avatar size={100} icon={<UserOutlined />} />
                       )}
 
-                      <h3>{user.userName}</h3>
+                      <h3
+                        className="goToProfileHeading"
+                        onClick={() => {
+                          history.push(`/profile/${user.uid}`);
+                        }}
+                      >
+                        {user.userName}
+                      </h3>
                       <Button
                         onClick={() => {
                           addFriend(user.uid);

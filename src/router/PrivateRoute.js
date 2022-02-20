@@ -29,15 +29,12 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   const openNotification = ({ from, message }) => {
     console.log();
 
-    !history.location.pathname.includes("/chat") &&
+    !history.location.pathname.includes(`/chat/${from}`) &&
       notification.open({
         message: "New Message 🔔",
         description: `${message}`,
         onClick: () => {
-          history.push({
-            pathname: `/chat`,
-            to: from,
-          });
+          history.push(`/chat/${from}`);
         },
       });
   };

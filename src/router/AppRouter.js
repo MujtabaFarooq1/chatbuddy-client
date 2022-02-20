@@ -34,7 +34,8 @@ const AppRouter = () => {
         <PublicRoute path="/" component={LoginPage} exact={true} />
 
         {/* Private Routes ---------------------- */}
-        <PrivateRoute path="/chat" component={ChatPage} />
+        {/* <PrivateRoute path="/chat" component={ChatPage} /> */}
+        <PrivateRoute path="/chat/:friendId" component={ChatPage} />
         {/* <PrivateRoute path="/dashboard" component={DashboardPage} /> */}
 
         <PrivateRoute path="/myFriends" component={AllFriendsPage} />

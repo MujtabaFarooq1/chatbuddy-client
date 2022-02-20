@@ -89,7 +89,16 @@ const PostFeedItem = ({
   const handlePostItemClick = (e) => {
     if (
       clickToRedirect &&
-      e.target.className === "postFeedAuthorDescription" &&
+      e.target.className !== "postFeedAuthorName" &&
+      e.target.className !== "heartIconContainer" &&
+      !e.target.parentNode.parentNode.classList.contains("heartFilledIcon") &&
+      !e.target.parentNode.parentNode.classList.contains(
+        "heartIconContainer"
+      ) &&
+      !e.target.parentNode.parentNode.classList.contains(
+        "postFeedImageContainer"
+      ) &&
+      e.target.className !== "postFeedImageContainer" &&
       postData.postId
     ) {
       history.push(`/post/${postData.postId}`);
@@ -102,9 +111,9 @@ const PostFeedItem = ({
         hoverEffect ? "postFeedCartContainerHoverEffect" : ""
       }`}
       style={{ ...itemWrapperCustomStyles }}
-      onClick={handlePostItemClick}
     >
       <Card
+        onClick={handlePostItemClick}
         hoverable
         style={{ maxWidth: 600, width: "100%", ...cardCustomStyles }}
         cover={
@@ -156,7 +165,7 @@ const PostFeedItem = ({
                         {isFavState ? (
                           <HeartFilled className="heartFilledIcon" />
                         ) : (
-                          <HeartOutlined />
+                          <HeartOutlined className="heartHollow" />
                         )}
                       </>
                     )}

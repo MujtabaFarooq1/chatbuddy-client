@@ -62,8 +62,7 @@ const SideMenu = () => {
         throw new Error("Server Connection Error!");
       }
       history.push({
-        pathname: `/chat`,
-        to: roomId,
+        pathname: `/chat/${roomId}`,
       });
     } catch (err) {
       console.log(err);
