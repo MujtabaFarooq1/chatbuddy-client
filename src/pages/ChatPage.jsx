@@ -7,7 +7,7 @@ import { useStreamModelContext } from "../context/streamsModelContext";
 
 import MessageList from "../components/MessageList";
 import { useHistory, useLocation } from "react-router-dom";
-import { Input, Button } from "antd";
+import { Input, Button, message } from "antd";
 import {
   checkIfUserExistWithId,
   getAllChatMessagesForRoom,
@@ -40,6 +40,10 @@ const ChatPage = () => {
   const { peerModelState, peerModelDispatch } = usePeerModelContext();
   const { streamModelState, streamModelDispatch } = useStreamModelContext();
 
+  const messageListRef = useRef();
+
+  messageListRef.current = messages;
+
   useEffect(() => {
     // console.log("Joined room id is -> ", currentRoomId);
 
@@ -58,6 +62,7 @@ const ChatPage = () => {
       } else {
         history.push("/");
       }
+      handleMessageReceive();
     };
 
     initializeThings();
@@ -65,7 +70,7 @@ const ChatPage = () => {
     getAllChatMessagesForRoom(currentRoomId).then((res) => {
       setLoading(false);
       setMessages([...res]);
-      // console.log("Prev Messages are -->", res);
+      console.log("Prev Messages are -->", res);
     });
 
     // Cleanup
@@ -79,6 +84,10 @@ const ChatPage = () => {
       console.log("Component destroyed");
     };
   }, []);
+
+  // useEffect(() => {
+  //   handleMessageReceive();
+  // });
 
   const handleMessageSend = (e) => {
     e.preventDefault();
@@ -112,17 +121,20 @@ const ChatPage = () => {
     }
   };
 
-  const filterAndSetInitialMessages = (messagesToBeFiltered) => {
-    const filteredMessages = messagesToBeFiltered.map((msg) => {
-      if (msg.from === myRoomId) {
-        msg.type = "send";
-        return msg;
-      }
-      msg.type = "receive";
-      return msg;
-    });
+  const handleMessageReceive = () => {
+    socket.on("room-msg-recieve", ({ message }) => {
+      let newMessageToSet = message;
 
-    setMessages(filteredMessages);
+      if (message.from === myRoomId) {
+        newMessageToSet.type = "send";
+      } else {
+        newMessageToSet.type = "receive";
+      }
+
+      setMessages((prev) => {
+        return [...prev, newMessageToSet];
+      });
+    });
   };
 
   const initializeVideoCall = async () => {

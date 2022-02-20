@@ -3,7 +3,6 @@ import moment from "moment";
 
 const Message = ({ message }) => {
   const { curAuth } = useAuth();
-  console.log(message);
   return (
     // <p className={`message ${message.type ?? "sent"}`}>{message.content}</p>
     <>
