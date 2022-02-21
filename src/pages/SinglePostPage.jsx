@@ -1,4 +1,3 @@
-import App from "create-react-redux-router-app/templates/App";
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { getSinglePost } from "../actions/dbHelper";
