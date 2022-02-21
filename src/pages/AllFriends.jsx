@@ -124,6 +124,14 @@ const AllFriendsPage = () => {
               ) : (
                 <Skeleton avatar active paragraph={{ rows: 4 }} />
               )}
+
+              {friendsToShow && friendsToShow.length < 1 && (
+                <h1>
+                  {" "}
+                  You Dont Have Any Friends Yet Add Friends And Start Chatting
+                  Now!{" "}
+                </h1>
+              )}
             </Row>
           </Container>
         </>

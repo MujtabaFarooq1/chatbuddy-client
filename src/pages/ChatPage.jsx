@@ -11,6 +11,7 @@ import { Input, Button, message } from "antd";
 import {
   checkIfUserExistWithId,
   getAllChatMessagesForRoom,
+  getUserFromUid,
   sendMessagePermanent,
 } from "../actions/dbHelper";
 import { useAuth } from "../context/auth-context";
@@ -35,6 +36,8 @@ const ChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [friendData, setFriendData] = useState(null);
+
   // Call Model stuff
   const { callModelState, callModelDispatch } = useCallModelContext();
   const { peerModelState, peerModelDispatch } = usePeerModelContext();
@@ -46,8 +49,9 @@ const ChatPage = () => {
     let unmounted = false;
 
     const initializeThings = async () => {
-      // const userExists = await checkIfUserExistWithId(friendsRoomId);
-      const userExists = true;
+      const userExists = await checkIfUserExistWithId(friendsRoomId);
+      const frnddt = await getUserFromUid(friendId);
+      setFriendData(frnddt);
 
       if (userExists) {
         //Join Room
@@ -208,6 +212,10 @@ const ChatPage = () => {
     <>
       <div className="chatContainer">
         <div className="chatContainer__actions">
+          <p className="chatContainer__chattingWith">
+            {" "}
+            Chatting With {friendData && friendData.userName}
+          </p>
           <Button
             key="video-call"
             onClick={() => {

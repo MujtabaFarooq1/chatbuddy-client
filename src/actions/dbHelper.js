@@ -369,6 +369,10 @@ const updateUserProfile = async (uid, update) => {
   }
 };
 
+const deletePost = async (postId) => {
+  return await database().ref(`posts/${postId}`).remove();
+};
+
 export {
   getAllUsersAsync,
   getAllFriendsAsync,
@@ -385,4 +389,5 @@ export {
   getAllChatMessagesForRoom,
   getPostsOfUser,
   updateUserProfile,
+  deletePost,
 };

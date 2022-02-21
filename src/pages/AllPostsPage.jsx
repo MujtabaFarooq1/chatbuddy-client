@@ -1,5 +1,6 @@
 import { Button } from "antd";
 import PostFeedItem from "../components/PostFeedItem";
+import AppScreenLoading from "../components/AppScreenLoading";
 import { DingtalkOutlined } from "@ant-design/icons";
 import CreatePostModel from "./../components/CreatePostModel";
 import { useState } from "react";
@@ -66,7 +67,9 @@ const AllPostsPage = ({ wordsToShow = 200 }) => {
             )}
           </>
         ) : (
-          <h1>Loading Posts ...</h1>
+          <AppScreenLoading
+            LoadingDescription={"Kindly Wait While We Load Post Feed!"}
+          />
         )}
       </div>
 

@@ -19,10 +19,30 @@
   font-size: 1.2rem;
 }
 
+.postDeleteIcon {
+  margin: 0 0 0 auto;
+  transition: all 0.3s;
+}
+
+.postDeleteIcon:hover {
+  color: crimson;
+  font-size: 1.6rem;
+
+  transform: translateY(-0.5rem);
+}
+
 @media only screen and (max-width: 800px) {
   .primaryHeading {
     font-size: 1.8rem;
     text-align: center;
+  }
+
+  .content-wrapper {
+    padding: 10px !important;
+  }
+
+  .postFeedCartContainer {
+    padding: 0 !important;
   }
 }
 
@@ -180,6 +200,7 @@
   display: flex;
   flex-direction: column;
   padding: 0.5rem 1rem;
+  padding-top: 2rem;
 }
 
 .messageSendForm {
@@ -256,11 +277,26 @@
   top: 0;
   left: 0;
   width: 100%;
-  min-height: 50px;
-  box-shadow: 7px 6px 20px -10px rgba(56, 56, 56, 0.7);
+  /* min-height: 50px; */
+  /* box-shadow: 7px 6px 20px -10px rgba(56, 56, 56, 0.7);
   -webkit-box-shadow: 7px 6px 20px -10px rgba(56, 56, 56, 0.7);
-  -moz-box-shadow: 7px 6px 20px -10px rgba(56, 56, 56, 0.7);
+  -moz-box-shadow: 7px 6px 20px -10px rgba(56, 56, 56, 0.7); */
   z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: white;
+  flex-wrap: wrap;
+}
+
+.chatContainer__chattingWith {
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  margin: 0;
+  margin-right: 10px;
+  text-align: left;
 }
 
 .sideNavProfile__description {
@@ -497,4 +533,143 @@
   text-align: center;
   font-size: 24px;
   font-weight: 400;
+}
+
+/*  Conencting call */
+
+#phone {
+  background-color: black;
+
+  height: 667px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  position: relative;
+}
+.main {
+  flex-grow: 1;
+  z-index: 1;
+  text-align: center;
+}
+.footer {
+  flex-basis: 100px;
+}
+.decline,
+.accept {
+  height: 100%;
+  display: inline-block;
+  width: 150px;
+  font-size: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.accept {
+  background-color: #4cda64;
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
+  float: right;
+}
+.decline {
+  border-top-right-radius: 50px;
+  float: left;
+  background-color: #ff3b2f;
+  border-bottom-right-radius: 50px;
+}
+.avatar-wrapper {
+  border-radius: 50%;
+  display: block;
+  box-sizing: border-box;
+  margin: 100px auto 0 auto;
+  position: relative;
+
+  width: 200px;
+  height: 200px;
+  background-size: cover;
+
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+}
+
+.avatar-img {
+  width: 100%;
+  border-radius: 50%;
+}
+
+.avatar-wrapper::after {
+  content: "";
+  background-color: white;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  z-index: -1;
+  border-radius: 50%;
+  animation: 2s pulse infinite;
+}
+
+@keyframes pulse {
+  from {
+    transform: none;
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.header-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background-color: #4cda64;
+  z-index: -2;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+}
+
+.incoming {
+  margin-top: 50px;
+  font-size: 25px;
+  text-transform: uppercase;
+  font-weight: 900;
+  color: gray;
+}
+.name {
+  font-size: 50px;
+  font-weight: 300;
+  margin: 0;
+}
+
+.callBtnActionBtn {
+  text-decoration: none;
+  width: 90%;
+  margin: 0 auto;
+  padding: 10px;
+  font-size: 1.2rem;
+  text-transform: capitalize;
+  color: white;
+
+  border-radius: 3rem;
+  display: block;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.acceptCallBtn {
+  background-color: #4cda64;
+  color: black !important;
+  transition: all 0.3s;
+}
+
+.acceptCallBtn:hover {
+  background-color: #5ef076;
+}
+
+.cancelCallBtn {
+  background-color: crimson;
 }

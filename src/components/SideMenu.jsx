@@ -16,13 +16,16 @@ import {
   ProfileOutlined,
   UsergroupAddOutlined,
   MessageOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
 const SideMenu = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(
+    window.innerWidth <= 800 ? true : false
+  );
   const [friends, setFriends] = useState([]);
   const [selectedKey, setSelectedKey] = useState("dashboard");
   const [openedSubMenus, setOpenedSubMenus] = useState([]);
@@ -202,7 +205,7 @@ const SideMenu = () => {
               });
           }}
           key="logout"
-          icon={<ProfileOutlined />}
+          icon={<LogoutOutlined />}
         >
           Logout
         </Menu.Item>

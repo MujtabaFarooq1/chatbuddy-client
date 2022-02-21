@@ -165,6 +165,14 @@ const DashboardPage = () => {
               ) : (
                 <Skeleton avatar active paragraph={{ rows: 4 }} />
               )}
+
+              {usersToShow && usersToShow.length < 1 && (
+                <h1>
+                  {" "}
+                  EveryOne Is Already Your Friend , But Stay tuned new suers are
+                  coming!{" "}
+                </h1>
+              )}
             </Row>
           </Container>
         </>

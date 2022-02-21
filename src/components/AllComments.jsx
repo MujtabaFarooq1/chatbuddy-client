@@ -14,6 +14,7 @@ function AllComments({ comments, postId }) {
   );
   const [comment, setComment] = useState("");
   const [commentSendLoading, setCommentSendLoading] = useState(false);
+  const [commentSendError, setCommentSendError] = useState("");
 
   // functions
   const handlePostComment = async () => {
@@ -25,8 +26,12 @@ function AllComments({ comments, postId }) {
           (a, b) => b.createdAt - a.createdAt
         );
         setPostComments((prev) => [...newComments]);
+        setCommentSendError("");
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        console.log(err);
+        setCommentSendError(err.message ? err.message : err);
+      })
       .finally(() => {
         setCommentSendLoading(false);
       });
@@ -37,6 +42,12 @@ function AllComments({ comments, postId }) {
       <h2> Comments ({postComments.length || 0}) </h2>
 
       {commentSendLoading && <h3> Please Wait Checking Your Comment </h3>}
+
+      {!!commentSendError && (
+        <h3 style={{ color: "red", textTransform: "capitalize" }}>
+          {commentSendError}
+        </h3>
+      )}
 
       <Form>
         <Form.Item

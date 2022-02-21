@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Modal } from "antd";
 import { useCallModelContext } from "../context/callModelContext";
 import { usePeerModelContext } from "../context/peerModelContext";
@@ -10,6 +10,7 @@ import VideoStream from "./VideoStream";
 import { Container, Row, Col } from "react-grid-system";
 import Participants from "./Participants/Participants.component";
 import { Participant } from "./Participants/Participant/Participant.component";
+import { getUserFromUid } from "../actions/dbHelper";
 
 // import ConnectionObject from "../interfaces/ConnectionObject";
 
@@ -18,6 +19,8 @@ const CallModel = (props) => {
   const { callModelState, callModelDispatch } = useCallModelContext();
   const { peerModelState, peerModelDispatch } = usePeerModelContext();
   const { streamModelState, streamModelDispatch } = useStreamModelContext();
+
+  const [friendToCall, setFriendToCall] = useState(null);
 
   const ringModelSource = `https://firebasestorage.googleapis.com/v0/b/chat-buddy-d6954.appspot.com/o/sounds%2FgoingCall.mp3?alt=media&token=e5c709cb-6569-4636-b8ef-6215a26cab9b`;
   const incommingCallRing = `https://firebasestorage.googleapis.com/v0/b/chat-buddy-d6954.appspot.com/o/sounds%2FincomingCall.mp3?alt=media&token=922f614d-8a67-4459-8096-01836e8939bd`;
@@ -129,6 +132,18 @@ const CallModel = (props) => {
     );
   }, [peerModelState]);
 
+  useEffect(() => {
+    if (callModelState?.options?.to?.length > 0) {
+      const frndToCall = callModelState?.options?.to?.filter(
+        (item) => item.uid !== curAuth.uid
+      );
+      getUserFromUid(frndToCall[0].uid).then((res) => {
+        console.log(res, frndToCall);
+        setFriendToCall(res);
+      });
+    }
+  }, [callModelState]);
+
   const handleAcceptCall = async () => {
     try {
       const myStream = await navigator.mediaDevices.getUserMedia({
@@ -215,30 +230,39 @@ const CallModel = (props) => {
     }
   };
 
+  const handleCallCancel = (e) => {
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
+
+    callModelDispatch({ type: "CLOSE" });
+    streamModelDispatch({ type: "REMOVE_ALL_STREAMS" });
+    peerModelDispatch({ type: "DISCONNECT_PEER" });
+    // const callRejectedToList = callModelState?.options?.to?.filter(
+    //   (connectionObj) => connectionObj.uid !== curAuth.uid
+    // );
+
+    socket.emit("reject-call", {
+      rejectedBy: curAuth.uid,
+      rejectedTo: callModelState?.options?.to,
+    });
+  };
+
   return (
     <>
       <Modal
-        title="Calling Friend"
+        title={false}
         visible={callModelState.modelOpen}
         style={{ top: 20 }}
         width={callModelState.modelState === "connected" ? "100%" : "50%"}
-        onOk={() => {
-          callModelDispatch({ type: "CLOSE" });
-          streamModelDispatch({ type: "REMOVE_ALL_STREAMS" });
-          peerModelDispatch({ type: "DISCONNECT_PEER" });
-          // const callRejectedToList = callModelState?.options?.to?.filter(
-          //   (connectionObj) => connectionObj.uid !== curAuth.uid
-          // );
-
-          socket.emit("reject-call", {
-            rejectedBy: curAuth.uid,
-            rejectedTo: callModelState?.options?.to,
-          });
-        }}
+        closable={false}
+        keyboard={false}
+        // okButtonProps={false}
+        footer={false}
+        // onOk={handleCallCancel}
       >
         {callModelState.modelState === "connected" ? (
           <div className="callModel-videoContainer">
-            Call Connected
             <Container>
               <div
                 style={{
@@ -259,6 +283,14 @@ const CallModel = (props) => {
                 ))}
               </div>
             </Container>
+            <a
+              className="cancelCallBtn callBtnActionBtn"
+              href="#."
+              onClick={handleCallCancel}
+            >
+              {" "}
+              Leave Call{" "}
+            </a>
           </div>
         ) : callModelState.modelState === "ringing" ? (
           <div>
@@ -270,12 +302,51 @@ const CallModel = (props) => {
             >
               <source src={incommingCallRing} />
             </audio>
-            <h3>
+
+            <div className="connectingCallWrapper">
+              <div id="phone">
+                <div className="main">
+                  <div className="header-background" />
+                  <div className="avatar-wrapper">
+                    <img
+                      className="avatar-img"
+                      src="https://joeschmoe.io/api/v1/male/random"
+                      alt="UserImage"
+                    />
+                  </div>
+
+                  <h2 className="incoming">
+                    Incoming Call From {callModelState?.options?.initiatorName}
+                  </h2>
+                </div>
+                <div className="footer">
+                  <a
+                    className="acceptCallBtn callBtnActionBtn"
+                    href="#."
+                    onClick={handleAcceptCall}
+                  >
+                    {" "}
+                    Accept Call{" "}
+                  </a>
+
+                  <a
+                    className="cancelCallBtn callBtnActionBtn"
+                    href="#."
+                    onClick={handleCallCancel}
+                  >
+                    {" "}
+                    Cancel Call{" "}
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* <h3>
               Recieving {callModelState?.options?.to?.length > 2 ?? "Group"}{" "}
               call from - {callModelState?.options?.initiatorName}
             </h3>
             <Button>Reject</Button>
-            <Button onClick={handleAcceptCall}>Accept</Button>
+            <Button onClick={handleAcceptCall}>Accept</Button> */}
           </div>
         ) : callModelState.modelState === "calling" ? (
           <>
@@ -287,7 +358,35 @@ const CallModel = (props) => {
             >
               <source src={ringModelSource} />
             </audio>
-            <div>Please wait we are connecting your call ...</div>
+
+            <div className="connectingCallWrapper">
+              <div id="phone">
+                <div className="main">
+                  <div className="header-background" />
+                  <div className="avatar-wrapper">
+                    <img
+                      className="avatar-img"
+                      src="https://joeschmoe.io/api/v1/male/random"
+                      alt="UserImage"
+                    />
+                  </div>
+
+                  <h2 className="incoming">
+                    Calling {friendToCall && friendToCall?.userName}{" "}
+                  </h2>
+                </div>
+                <div className="footer">
+                  <a
+                    className="cancelCallBtn callBtnActionBtn"
+                    href="#."
+                    onClick={handleCallCancel}
+                  >
+                    {" "}
+                    Cancel Call{" "}
+                  </a>
+                </div>
+              </div>
+            </div>
           </>
         ) : (
           <>...</>

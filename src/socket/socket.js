@@ -2,8 +2,13 @@ import { io } from "socket.io-client";
 
 const SERVER_URL =
   process.env.NODE_ENV === "development"
-    ? "http://localhost:8000/"
+    ? "http://192.168.100.6:8000/"
     : "https://chatbuddy-server.herokuapp.com/";
+
+// const SERVER_URL =
+//   process.env.NODE_ENV === "development"
+//     ? "http://localhost:8000/"
+//     : "https://chatbuddy-server.herokuapp.com/";
 
 const socket = io(SERVER_URL, {
   autoConnect: true,

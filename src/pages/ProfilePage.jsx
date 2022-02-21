@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getUserFromUid } from "../actions/dbHelper";
+import AppScreenLoading from "../components/AppScreenLoading";
 import Profile from "../components/Profile/index";
 import { useAuth } from "../context/auth-context";
 
@@ -31,7 +32,7 @@ function ProfilePage() {
       {!loading ? (
         <Profile profileData={profileData} userId={userId} />
       ) : (
-        <h3> Loading ... </h3>
+        <AppScreenLoading LoadingDescription={"Getting Profile ..."} />
       )}
     </>
   );

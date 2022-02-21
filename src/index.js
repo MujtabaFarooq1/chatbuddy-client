@@ -1,5 +1,14 @@
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en.json";
+import ru from "javascript-time-ago/locale/ru.json";
+
+import "firebaseui/dist/firebaseui.css";
+import "antd/dist/antd.css";
+
+import { withErrorBoundary } from "react-error-boundary";
+
 import AppRouter from "./router/AppRouter";
 import useOnlineStatus from "./hooks/useOnlineStatus";
 import database, { firebase } from "./firebase/firebase";
@@ -8,17 +17,9 @@ import { AuthProvider } from "./context/auth-context";
 import CallModelProvider from "./context/callModelContext";
 import PeerModelProvider from "./context/peerModelContext";
 import StreamModelProvider from "./context/streamsModelContext";
-import TimeAgo from "javascript-time-ago";
-
-import en from "javascript-time-ago/locale/en.json";
-import ru from "javascript-time-ago/locale/ru.json";
-
-import "firebaseui/dist/firebaseui.css";
-import "antd/dist/antd.css";
+import AppScreenLoading from "./components/AppScreenLoading";
 
 import "./App.css";
-import adapter from "webrtc-adapter";
-import { withErrorBoundary } from "react-error-boundary";
 
 //Global variable
 let hasRendered = false;
@@ -31,7 +32,7 @@ const Loading = () => {
     hasRendered = true;
     return <h1> You are Offline - retry</h1>;
   }
-  return <h1>Loading ...</h1>;
+  return <AppScreenLoading LoadingDescription={"Initializing App !"} />;
 };
 
 ReactDOM.render(<Loading />, document.getElementById("root"));

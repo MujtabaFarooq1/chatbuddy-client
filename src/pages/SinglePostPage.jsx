@@ -1,7 +1,9 @@
+import App from "create-react-redux-router-app/templates/App";
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { getSinglePost } from "../actions/dbHelper";
 import AllComments from "../components/AllComments";
+import AppScreenLoading from "../components/AppScreenLoading";
 
 import PostFeedItem from "../components/PostFeedItem";
 import { useAuth } from "../context/auth-context";
@@ -57,7 +59,7 @@ function SinglePostPage() {
           />
         </>
       ) : (
-        <div> Loading ... </div>
+        <AppScreenLoading LoadingDescription={"Loading Post"} />
       )}
     </div>
   );

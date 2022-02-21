@@ -6,13 +6,14 @@ import {
   LikeFilled,
   CommentOutlined,
   LoadingOutlined,
+  DeleteFilled,
 } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 import { nanoid } from "nanoid";
 import { useAuth } from "../context/auth-context";
 import { getUserFromUid, handlePostLike } from "../actions/dbHelper";
 import ReactTimeAgo from "react-time-ago";
-import { getPostImageUrl } from "../actions/dbHelper";
+import { getPostImageUrl, deletePost } from "../actions/dbHelper";
 
 // createdBy: uid,
 // createdAt: currentTimeStamp,
@@ -99,10 +100,25 @@ const PostFeedItem = ({
         "postFeedImageContainer"
       ) &&
       e.target.className !== "postFeedImageContainer" &&
-      postData.postId
+      postData.postId &&
+      !e.target.parentNode.parentNode.parentNode.classList.contains(
+        "postDeleteIcon"
+      )
     ) {
       history.push(`/post/${postData.postId}`);
     }
+  };
+
+  const handleDeletePost = () => {
+    if (!postData.postId || !postData.authorId === uid) {
+      return console.log(
+        "Sorry You Don't Have the permission to Perform this action!"
+      );
+    }
+
+    deletePost(postData.postId).then(() => {
+      history.push(history.location.pathname);
+    });
   };
 
   return (
@@ -230,6 +246,12 @@ const PostFeedItem = ({
                     <span className="postFeedItemStatNumber">
                       {postData?.comments?.length || 0}
                     </span>
+                  </div>
+                )}
+
+                {postData.authorId === uid && (
+                  <div className="postDeleteIcon">
+                    <DeleteFilled onClick={handleDeletePost} />
                   </div>
                 )}
               </div>

@@ -5,6 +5,7 @@ import LoginPage from "./LoginPage";
 import SinglePostPage from "./SinglePostPage";
 import ProfilePage from "./ProfilePage";
 import AllFriendsPage from "./AllFriends";
+import NotFoundPage from "./NotFoundPage";
 
 export {
   AllPostsPage,
@@ -14,4 +15,5 @@ export {
   SinglePostPage,
   ProfilePage,
   AllFriendsPage,
+  NotFoundPage,
 };

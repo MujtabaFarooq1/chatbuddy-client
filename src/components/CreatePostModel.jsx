@@ -3,12 +3,14 @@ import { Form, Input, Button, Modal, Upload, message } from "antd";
 import { UploadOutlined, InboxOutlined } from "@ant-design/icons";
 import { useAuth } from "../context/auth-context";
 import { createPostAsync } from "../actions/dbHelper";
+import { useHistory } from "react-router-dom";
 const { Dragger } = Upload;
 
 function CreatePostModel({ isVisible, closeModel }) {
   const [postImages, setPostImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const formRef = useRef();
+  const history = useHistory();
 
   const { curAuth } = useAuth();
 
@@ -62,6 +64,8 @@ function CreatePostModel({ isVisible, closeModel }) {
       .finally(() => {
         setLoading(false);
         clearFormData();
+        closeModel();
+        history.push("/");
       });
   };
 

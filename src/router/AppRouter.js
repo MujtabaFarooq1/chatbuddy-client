@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 
@@ -14,6 +14,7 @@ import {
   SinglePostPage,
   ProfilePage,
   AllFriendsPage,
+  NotFoundPage,
 } from "../pages/index";
 
 import socket, { connectToSocket } from "../socket/socket";
@@ -45,6 +46,7 @@ const AppRouter = () => {
         <PrivateRoute path="/post/:postId" component={SinglePostPage} />
 
         {/* Available to everyone Routes ---------------------- */}
+        <Route component={NotFoundPage} />
       </Switch>
     </Router>
   );
