@@ -16,7 +16,7 @@ function AppScreenLoading({ LoadingDescription }) {
     setTimeout(() => {
       setCurBackgroundColor(getRandomRgb());
       changebackgroundInfinitely();
-    }, 3000);
+    }, 700);
   }
 
   useEffect(() => {

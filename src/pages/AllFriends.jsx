@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Divider, Image, Avatar, Button, Skeleton, Input } from "antd";
 import { Container, Row, Col } from "react-grid-system";
 import { getCurrentUser } from "../actions/users";
-import { getAllFriendsAsync } from "../actions/dbHelper";
+import { getAllFriendsAsync, removeFriendAsync } from "../actions/dbHelper";
 import socket from "../socket/socket";
 import { UserOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
@@ -109,14 +109,28 @@ const AllFriendsPage = () => {
                       >
                         {friend.userName}
                       </h3>
+
                       <Button
                         onClick={() => {
                           gotoUserRoom(friend.uid);
                         }}
-                        key="goToChat"
+                        key="message"
                         type="primary"
                       >
                         Message
+                      </Button>
+
+                      <Button
+                        onClick={() => {
+                          removeFriendAsync(friend.uid).then(() => {
+                            history.push("/myFriends");
+                          });
+                        }}
+                        key="removeFriend"
+                        type="primary"
+                        style={{ marginLeft: "10px" }}
+                      >
+                        Remove Friend
                       </Button>
                     </div>
                   </Col>
@@ -125,7 +139,7 @@ const AllFriendsPage = () => {
                 <Skeleton avatar active paragraph={{ rows: 4 }} />
               )}
 
-              {friendsToShow && friendsToShow.length < 1 && (
+              {friendsToShow && !loading && friendsToShow.length < 1 && (
                 <h1>
                   {" "}
                   You Dont Have Any Friends Yet Add Friends And Start Chatting

@@ -1,0 +1,23 @@
+.singleGameCard {
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid #d7c9c9;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.singleGameCard:hover {
+  background-color: white;
+  transform: scale(1.04);
+}
+
+.singleGameCard__img {
+  width: 100%;
+}
+
+.singleGameCard__content {
+  width: 100%;
+  text-align: center;
+  font-weight: 500;
+  font-size: 1.2rem;
+}

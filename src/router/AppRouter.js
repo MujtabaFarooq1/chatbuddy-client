@@ -20,6 +20,8 @@ import {
 import socket, { connectToSocket } from "../socket/socket";
 import { useEffect } from "react";
 import { useAuth } from "../context/auth-context";
+import AllGames from "../pages/AllGames";
+import SingleGamePage from "../pages/SingleGamePage";
 
 const AppRouter = () => {
   const auth = useAuth();
@@ -44,6 +46,8 @@ const AppRouter = () => {
         <PrivateRoute path="/users" component={DashboardPage} />
         <PrivateRoute path="/profile/:userId" component={ProfilePage} />
         <PrivateRoute path="/post/:postId" component={SinglePostPage} />
+        <PrivateRoute path={"/games"} component={AllGames} />
+        <PrivateRoute path={"/game/:gameId"} component={SingleGamePage} />
 
         {/* Available to everyone Routes ---------------------- */}
         <Route component={NotFoundPage} />

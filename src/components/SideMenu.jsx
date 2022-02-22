@@ -17,6 +17,7 @@ import {
   UsergroupAddOutlined,
   MessageOutlined,
   LogoutOutlined,
+  CarOutlined,
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
@@ -189,6 +190,16 @@ const SideMenu = () => {
           icon={<ProfileOutlined />}
         >
           My Profile
+        </Menu.Item>
+
+        <Menu.Item
+          onClick={() => {
+            history.push("/games");
+          }}
+          key="game"
+          icon={<CarOutlined />}
+        >
+          Games
         </Menu.Item>
 
         <Menu.Item

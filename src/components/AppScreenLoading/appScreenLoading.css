@@ -6,6 +6,7 @@
   height: 100vh;
   background: rgba(0, 0, 0, 0.288);
   z-index: 10000;
+  transition: all 0.5s;
 }
 
 .circlesWrapper {

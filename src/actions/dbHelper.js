@@ -62,6 +62,31 @@ const addFriendAsync = async (uid) => {
   return retrivedUser;
 };
 
+// Remove Friend Async
+
+// Async Function
+const removeFriendAsync = async (uid) => {
+  const curentUser = await getCurrentUser();
+  if (curentUser.uid === null) {
+    throw new Error("Sorry You have to be logged in to add a friend");
+  }
+  const retrivedUser = await database().ref(`users/${uid}`).once("value");
+
+  if (retrivedUser.val() !== null) {
+    //Remove user from my friend
+    await database().ref(`users/${curentUser.uid}/friends/${uid}`).remove();
+
+    // Remove me from user
+    await database().ref(`users/${uid}/friends/${curentUser.uid}`).remove();
+  } else {
+    throw new Error("Sorry this user doesn't exist!");
+  }
+
+  return retrivedUser;
+};
+
+// -----------------
+
 const checkIfUserExistWithId = async (uid) => {
   let user;
   try {
@@ -373,6 +398,37 @@ const deletePost = async (postId) => {
   return await database().ref(`posts/${postId}`).remove();
 };
 
+const addNewGame = async (gameData) => {
+  try {
+    const postedGame = await database().ref(`games`).push(gameData);
+    return postedGame;
+  } catch (e) {
+    throw new Error(e.message);
+  }
+};
+
+const getAllGames = async () => {
+  const gamesSnap = await database().ref("games").once("value");
+  const gamesData = gamesSnap.val();
+
+  const gameDataList = [];
+  for (const [key, value] of Object.entries(gamesData)) {
+    gameDataList.push({
+      gameId: key,
+      ...value,
+    });
+  }
+
+  return gameDataList;
+};
+
+const getGameByGameId = async (gameId) => {
+  const gameSnap = await database().ref(`games/${gameId}`).once("value");
+  const gameData = gameSnap.val();
+
+  return gameData;
+};
+
 export {
   getAllUsersAsync,
   getAllFriendsAsync,
@@ -390,4 +446,8 @@ export {
   getPostsOfUser,
   updateUserProfile,
   deletePost,
+  addNewGame,
+  getAllGames,
+  getGameByGameId,
+  removeFriendAsync,
 };

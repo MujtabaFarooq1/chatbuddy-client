@@ -166,7 +166,7 @@ const DashboardPage = () => {
                 <Skeleton avatar active paragraph={{ rows: 4 }} />
               )}
 
-              {usersToShow && usersToShow.length < 1 && (
+              {usersToShow && !loading && usersToShow.length < 1 && (
                 <h1>
                   {" "}
                   EveryOne Is Already Your Friend , But Stay tuned new suers are
