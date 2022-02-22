@@ -61,6 +61,17 @@
     text-align: center;
     font-size: 13px;
   }
+
+  .profilePage__tab__friend {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .profilePage__tab__friend__desc {
+    margin: 1rem 0 !important;
+    text-align: center;
+  }
 }
 
 .profilePage__tab__friend {

@@ -254,7 +254,11 @@ const CallModel = (props) => {
         title={false}
         visible={callModelState.modelOpen}
         style={{ top: 20 }}
-        width={callModelState.modelState === "connected" ? "100%" : "50%"}
+        width={
+          callModelState.modelState === "connected" || window.screen.width < 800
+            ? "100%"
+            : "50%"
+        }
         closable={false}
         keyboard={false}
         // okButtonProps={false}

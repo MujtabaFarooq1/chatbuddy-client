@@ -6,9 +6,9 @@ const peerModelReducer = (state, action) => {
       };
 
     case "DISCONNECT_PEER":
-      state.myPeer.removeAllListeners();
-      state.myPeer.destroy();
-      console.log(state.myPeer);
+      state?.myPeer?.removeAllListeners();
+      state?.myPeer?.destroy();
+      console?.log(state.myPeer);
       return {
         myPeer: null,
       };
