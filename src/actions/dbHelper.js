@@ -168,13 +168,10 @@ const handlePostLike = async (postId, uid) => {
 
     const postLikes = post.likes;
 
-    if (postLikes) {
-      const alreadyLiked = postLikes.includes(uid);
-      if (!alreadyLiked) {
-        tempPostLikes = [...postLikes, uid];
-      } else {
-        tempPostLikes = postLikes.filter((likeId) => !likeId === uid);
-      }
+    if (postLikes && postLikes.includes(uid)) {
+      tempPostLikes = postLikes.filter((likeId) => !(likeId === uid));
+    } else if (postLikes) {
+      tempPostLikes = [...postLikes, uid];
     }
 
     await database().ref(`posts/${postId}/likes`).set(tempPostLikes);
@@ -429,6 +426,20 @@ const getGameByGameId = async (gameId) => {
   return gameData;
 };
 
+const toggleShowFriends = async (uid) => {
+  if (!uid) {
+    throw new Error("Invalid Operation!");
+  }
+  const userSnap = await database().ref(`users/${uid}`).once("value");
+  const userData = userSnap.val();
+  if (!userSnap) {
+    throw new Error("Invalid Operation!");
+  }
+  const showFriends = !userData.showFriends;
+
+  return await database().ref(`users/${uid}`).update({ showFriends });
+};
+
 export {
   getAllUsersAsync,
   getAllFriendsAsync,
@@ -450,4 +461,5 @@ export {
   getAllGames,
   getGameByGameId,
   removeFriendAsync,
+  toggleShowFriends,
 };

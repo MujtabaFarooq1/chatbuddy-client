@@ -9,6 +9,7 @@ import {
   getPostsOfUser,
   addFriendAsync,
   updateUserProfile,
+  toggleShowFriends,
 } from "../../actions/dbHelper";
 
 const { TabPane } = Tabs;
@@ -47,6 +48,12 @@ function Profile({ profileData, userId }) {
     setEditModel(true);
   };
 
+  const handleToggleShowFriends = () => {
+    toggleShowFriends(uid).then(() => {
+      history.push("/profile/me");
+    });
+  };
+
   //---------------------------------- GETING DATA ------------
   useEffect(() => {
     getPostsOfUser(userId === "me" ? uid : userId, uid)
@@ -82,8 +89,7 @@ function Profile({ profileData, userId }) {
     );
 
     if (Object.keys(filterdFormData).length === 0) {
-      return;
-      console.log("Kindly Fill the data to change!");
+      return console.log("Kindly Fill the data to change!");
     }
 
     updateUserProfile(uid, filterdFormData)
@@ -104,6 +110,7 @@ function Profile({ profileData, userId }) {
       </div>
     );
   }
+
   return (
     <>
       <main className="profilePage">
@@ -137,18 +144,32 @@ function Profile({ profileData, userId }) {
 
               <div className="profilePage__meta__Actions">
                 {userId === "me" ? (
-                  <Button onClick={openEditModal}> Edit Profile </Button>
-                ) : friendsOfUser?.includes(userId) ? (
-                  <Button
-                    onClick={() => {
-                      handleAddFriend(friendsOfUser.userId);
-                    }}
-                  >
-                    {" "}
-                    Add Friend{" "}
-                  </Button>
+                  <>
+                    <Button onClick={openEditModal}> Edit Profile </Button>
+                    <Button
+                      onClick={handleToggleShowFriends}
+                      style={{ marginLeft: "10px" }}
+                    >
+                      {profileData.showFriends
+                        ? "Hide My Friends From Others"
+                        : "Show My Friends to Others"}
+                    </Button>
+                  </>
                 ) : (
-                  <h5> Already Your Friend </h5>
+                  <>
+                    {friendsOfUser?.filter((friend) => friend.friendId === uid)
+                      .length > 0 ? (
+                      <h5> Already Your Friend </h5>
+                    ) : (
+                      <Button
+                        onClick={() => {
+                          handleAddFriend(friendsOfUser.userId);
+                        }}
+                      >
+                        Add Friend
+                      </Button>
+                    )}
+                  </>
                 )}
               </div>
             </div>
@@ -188,45 +209,54 @@ function Profile({ profileData, userId }) {
                 </div>
               </TabPane>
               <TabPane tab="Friends" key="friends">
-                {friendsOfUser ? (
-                  friendsOfUser.map(
-                    ({
-                      friendId = "none",
-                      emal = "anonymoys@email.com",
-                      userName = "Anonymous",
-                      img = "https://joeschmoe.io/api/v1/male/random",
-                      profession = "Free Soul",
-                    }) => (
-                      <div
-                        className="profilePage__tab__friend"
-                        key={nanoid()}
-                        onClick={() => {
-                          history.push(`/profile/${friendId}`);
-                        }}
-                      >
-                        <Image
-                          src={`${img}`}
-                          className="profilePage__tab__friend__img"
-                        />
-                        <div className="profilePage__tab__friend__desc">
-                          <Link
-                            to={`/profile/${friendId}`}
-                            className="profilePage__tab__friend__name"
+                {profileData.showFriends || userId === "me" ? (
+                  <>
+                    {friendsOfUser ? (
+                      friendsOfUser.map(
+                        ({
+                          friendId = "none",
+                          emal = "anonymoys@email.com",
+                          userName = "Anonymous",
+                          img = "https://joeschmoe.io/api/v1/male/random",
+                          profession = "Free Soul",
+                        }) => (
+                          <div
+                            className="profilePage__tab__friend"
+                            key={nanoid()}
+                            onClick={() => {
+                              history.push(`/profile/${friendId}`);
+                            }}
                           >
-                            {userName}
-                          </Link>
-                          <p className="profilePage__tab__friend__email">
-                            {emal}
-                          </p>
-                          <p className="profilePage__tab__friend__email">
-                            {profession}
-                          </p>
-                        </div>
-                      </div>
-                    )
-                  )
+                            <Image
+                              src={`${img}`}
+                              className="profilePage__tab__friend__img"
+                            />
+                            <div className="profilePage__tab__friend__desc">
+                              <Link
+                                to={`/profile/${friendId}`}
+                                className="profilePage__tab__friend__name"
+                              >
+                                {userName}
+                              </Link>
+                              <p className="profilePage__tab__friend__email">
+                                {emal}
+                              </p>
+                              <p className="profilePage__tab__friend__email">
+                                {profession}
+                              </p>
+                            </div>
+                          </div>
+                        )
+                      )
+                    ) : (
+                      <h2> No Friend found </h2>
+                    )}{" "}
+                  </>
                 ) : (
-                  <h2> No Friend found </h2>
+                  <h3>
+                    {" "}
+                    Sorry This User Doesn't allow others to see his friends{" "}
+                  </h3>
                 )}
               </TabPane>
             </Tabs>
