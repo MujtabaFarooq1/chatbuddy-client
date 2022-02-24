@@ -28,7 +28,7 @@ export const Participant = ({ stream, hideVideo, curentIndex, showAvatar }) => {
           muted={streamModelState.myStreamId === stream.id}
           playsInline
         ></video>
-        {stream ? <AudioMutedOutlined /> : <AudioOutlined />}
+        {/* {stream ? <AudioMutedOutlined /> : <AudioOutlined />} */}
         {showAvatar && !stream && (
           <div style={{ background: "green" }} className="avatar">
             {"M"}

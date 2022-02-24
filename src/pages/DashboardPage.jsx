@@ -72,6 +72,7 @@ const DashboardPage = () => {
       .then((friend) => {
         const { email, img, userName } = friend.val();
         setFriends([...friends, { uid: friend.key, email, img, userName }]);
+        history.push("/users");
       })
       .catch((err) => {
         console.log(err.message);
